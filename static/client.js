@@ -4,8 +4,25 @@ socket.on("authenticate", function(){
 	socket.emit("authenticate", secret);
 });
 
-socket.on("auth_success", () => {
-	alert("SUCCESS!!!");
+socket.on("authSuccess", () => {
+	serverMessage("You have joined to the lobby!");
+});
+
+socket.on("userConnected", (user) => {
+	serverMessage(user + " has connected!");
+});
+
+socket.on("userDisconnected", (user) => {
+	serverMessage(user + " has disconnected!");
+});
+
+socket.on("onlineUsers", (users) => {
+	console.log("ONLINEUSERS");
+	updateUsers(users);
+});
+
+socket.on("userMessage", (user, message) => {
+	userMessage(user, message);
 });
 
 socket.on("disconnect", () => {
@@ -17,28 +34,27 @@ socket.on("ping", () => {
 	socket.emit("pong");
 });
 
-function postLogin(){
-
-	var data = {
-		username: $("#username").val(),
-		password: $("#password").val()
-	};
-
-	console.log(data);
-
-	$.post({
-		url: "/login",
-		data: JSON.stringify(data),
-		dataType: "json",
-		contentType: "application/json",
-		success: (resp) => {
-			console.log("RESPONSE");
-			console.log(resp);
-		}
+function updateUsers(users){
+	$("#users").empty();
+	users.forEach((user) => {
+		$("#users").append("<p>" + user + "</p>");
 	});
-
 }
 
-function connect(username, password){
-	console.log(username + " - " + password);
+function serverMessage(message){
+	$("#chat").append("<p><b>" + message + "</b></p>");
+}
+
+function userMessage(user, message){
+	$("#chat").append("<p><b>" + user + ":</b> " + message + "</p>");
+}
+
+function sendMessage(){
+
+	var message = $("#message").val();
+
+	socket.emit("userMessage", message);
+
+	$("#message").val("");
+
 }
