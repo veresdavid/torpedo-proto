@@ -8,7 +8,7 @@
   <meta name="description" content="The HTML5 Herald">
   <meta name="author" content="SitePoint">
   <script>
-    var secret = "{{ current_user.secret }}";
+    var secret = "{{ current_user.username }}" + ";" + "{{ current_user.password }}";
   </script>
   <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
   <script src="{{ url_for('static', filename='socket.io-client.js') }}"></script>

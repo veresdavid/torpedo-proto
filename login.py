@@ -7,6 +7,8 @@ from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
 import pymongo
 from bson import ObjectId
+import re
+from passlib.hash import sha256_crypt
 
 # config
 app = Flask(__name__)
@@ -23,24 +25,18 @@ coll_users = db["users"]
 
 # class for Users
 class User(UserMixin):
-	def __init__(self, id, username, password, secret):
+	def __init__(self, id, username, password):
 		self.id = id # this must be unicode!!!
 		self.username = username
 		self.password = password
-		self.secret = secret
 
 def pad(s):
 	return s + ((16-len(s) % 16) * "{")
 
-def generate_secret(username, password):
-	# TODO: make some encryption here!!!
-	ciphertext = username + ";" + password
-	return ciphertext
-
 @login_manager.user_loader
 def load_user(id):
 	tmp = coll_users.find_one({"_id": ObjectId(id)})
-	return User(str(tmp["_id"]), tmp["username"], tmp["password"], generate_secret(tmp["username"], tmp["password"]))
+	return User(str(tmp["_id"]), tmp["username"], tmp["password"])
 	# return User("1", "dave", "kecske", generate_secret("dave", "kecske"))
 
 @app.route("/login", methods=["GET", "POST"])
@@ -49,14 +45,43 @@ def login():
 		return render_template("login.html")
 	else:
 		data = request.get_json()
-		tmp = coll_users.find_one({"username": data["username"], "password": data["password"]})
-		if tmp is not None:
+		# tmp = coll_users.find_one({"username": data["username"], "password": data["password"]})
+		tmp = coll_users.find_one({"username": data["username"]})
+		if tmp is None:
+			return jsonify({"success": False})
+		if sha256_crypt.verify(data["password"], tmp["password"]):
 			# user = User("1", "dave", "kecske", generate_secret("dave", "kecske"))
-			user = User(str(tmp["_id"]), tmp["username"], tmp["password"], generate_secret(tmp["username"], tmp["password"]))
+			user = User(str(tmp["_id"]), tmp["username"], tmp["password"])
 			login_user(user)
 			return jsonify({"success": True})
 		else:
 			return jsonify({"success": False})
+
+def registrate_user(data):
+	# validate: data format, already exist
+	# return json response
+	username = data["username"]
+	password = data["password"]
+	if re.match(r"[a-zA-Z0-9]{4,10}", username) is None:
+		return jsonify({"error": True, "reason": "Username's length must be 4-10 characters!"})
+	if re.match(r".{6,}", password) is None:
+		return jsonify({"error": True, "reason": "Password's length must be at least 6 characters!"})
+	if coll_users.find_one({"username": username}) is not None:
+		return jsonify({"error": True, "reason": "Username already in use!"})
+	hash = sha256_crypt.encrypt(password)
+	coll_users.insert_one({"username": username, "password": hash})
+	return jsonify({"success": True})
+
+@app.route("/registration", methods=["GET", "POST"])
+def registration():
+	if current_user.is_authenticated:
+		return redirect("/")
+
+	if request.method == "GET":
+		return render_template("/registration.html")
+	else:
+		data = request.get_json()
+		return registrate_user(data)
 
 @app.route("/logout")
 @login_required

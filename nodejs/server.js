@@ -28,11 +28,9 @@ io.on("connection", function(socket){
 	socket.emit("authenticate");
 
 	socket.on("authenticate", function(data){
-		
-		decrypted = decrypt(data);
 
 		// get parts of data
-		parts = decrypted.split(";");
+		parts = data.split(";");
 		username = parts[0];
 		password = parts[1];
 
@@ -42,11 +40,6 @@ io.on("connection", function(socket){
 	});
 
 });
-
-function decrypt(data){
-	// TODO: decrypt the data!!!
-	return data;
-}
 
 function kickUser(socket){
 	console.log("KICKED USER");
