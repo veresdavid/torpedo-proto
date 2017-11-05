@@ -41,6 +41,8 @@ def load_user(id):
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+	if current_user.is_authenticated:
+		return redirect("/secure")
 	if request.method == "GET":
 		return render_template("login.html")
 	else:

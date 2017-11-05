@@ -55,7 +55,9 @@ function connectUser(socket, result){
 	// TODO: create connection object and add it to the connections map
 	connection = {
 		dbdata: result,
-		socket: socket
+		socket: socket,
+		invitations: [],
+		waitings: []
 	};
 	connections.set(username, connection);
 
@@ -79,6 +81,101 @@ function connectUser(socket, result){
 	socket.on("userMessage", (message) => {
 		socket.broadcast.emit("userMessage", socket.username, message);
 		socket.emit("userMessage", socket.username, message);
+	});
+
+	socket.on("challenge", (user) => {
+
+		// TODO: check if user exists
+		if(!connections.has(user)){
+			console.log("NO SUCH USER!!!");
+			return;
+		}
+
+		// TODO: check if not inviting itself
+		if(socket.username === user){
+			console.log("CANT INVITE YOURSELF!!!");
+			return;
+		}
+
+		// get connection objects
+		var other = connections.get(user);
+		var current = connections.get(socket.username);
+
+		// TODO: check if not already:
+		// - invited other user
+		if(current.waitings.includes(user)){
+			console.log("ALREADY INVITED!!!");
+			return;
+		}
+		// - invited by other user
+		if(other.waitings.includes(socket.username)){
+			console.log("ALREADY INVITED BY OTHER USER!!!");
+			return;
+		}
+
+		// TODO: check if not in game
+
+		// TODO: update invitations on other user
+		other.invitations.push(socket.username);
+		other.socket.emit("invitations", other.invitations);
+
+		// TODO: update waitings on current user
+		current.waitings.push(user);
+		socket.emit("waitings", current.waitings);
+
+	});
+
+	socket.on("acceptChallenge", (user) => {
+		// TODO: do it!
+	});
+
+	socket.on("rejectChallenge", (user) => {
+
+		// TODO: check if user exists
+		if(!connections.has(user)){
+			console.log("NO SUCH USER!!!");
+			return;
+		}
+
+		// TODO: check if challenge exists
+		var current = connections.get(socket.username);
+		if(!current.invitations.includes(user)){
+			console.log("NO SUCH INVITATION!!!");
+			return;
+		}
+
+		// TODO: remove invitaion from current user and update
+		current.invitations.splice(current.invitations.indexOf(user), 1);
+		socket.emit("invitations", current.invitations);
+
+		// TODO: remove waiting from other user and update
+		var other = connections.get(user);
+		other.waitings.splice(other.waitings.indexOf(socket.username), 1);
+		other.socket.emit("waitings", other.waitings);
+
+	});
+
+	socket.on("cancelWaiting", (user) => {
+
+		if(!connections.has(user)){
+			console.log("NO SUCH USER!!!");
+			return;
+		}
+
+		var current = connections.get(socket.username);
+
+		if(!current.waitings.includes(user)){
+			console.log("NO SUCH INVITATION!!!");
+			return;
+		}
+
+		current.waitings.splice(current.waitings.indexOf(user), 1);
+		socket.emit("waitings", current.waitings);
+
+		var other = connections.get(user);
+		other.invitations.splice(other.invitations.indexOf(socket.username), 1);
+		other.socket.emit("invitations", other.invitations);
+
 	});
 
 }
