@@ -63,7 +63,7 @@ function updateUsers(users){
 	$("#users").empty();
 	users.forEach((user) => {
 		var p = $("<p></p>").text(user);
-		var inv = $("<span></span>").attr("onclick", "challenge('" + user + "')").text(" CHALLENGE");
+		var inv = $("<button></button>").attr("onclick", "challenge('" + user + "')").text("CHALLENGE");
 		$(p).append(inv);
 		$("#users").append(p);
 		// $("#users").append("<p>" + user + "</p>");

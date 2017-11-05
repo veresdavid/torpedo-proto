@@ -3,8 +3,6 @@
 from flask import Flask, render_template, request, jsonify, redirect, session
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user, logout_user
 import json
-from Crypto.Cipher import AES
-from Crypto.Random import get_random_bytes
 import pymongo
 from bson import ObjectId
 import re
@@ -14,7 +12,6 @@ from passlib.hash import sha256_crypt
 app = Flask(__name__)
 # app.config["SECRET_KEY"] = "once egyszer the ido there volt kette little pig"
 app.config["SECRET_KEY"] = "once egyszer the ido there volt kette little kecske"
-app.config["AES_KEY"] = "kecske kacsa kod"
 login_manager = LoginManager()
 login_manager.init_app(app)
 

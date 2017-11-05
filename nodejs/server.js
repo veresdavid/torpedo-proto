@@ -126,7 +126,71 @@ function connectUser(socket, result){
 	});
 
 	socket.on("acceptChallenge", (user) => {
-		// TODO: do it!
+
+		// TODO: is there such user
+		if(!connections.has(user)){
+			console.log("NO SUCH USER!!!");
+			return;
+		}
+
+		// TODO: is there such invitation
+		var current = connections.get(socket.username);
+		var other = connections.get(user);
+		if(!(current.invitations.includes(user) && other.waitings.includes(socket.username))){
+			console.log("NO SUCH INVITATION!!!");
+			return;
+		}
+
+		// TODO: remove invitation and waiting from connections
+		current.invitations.splice(current.invitations.indexOf(user), 1);
+		other.waitings.splice(other.waitings.indexOf(socket.username), 1);
+
+		// TODO: inform other invitations and waitings
+		current.invitations.forEach((invitation) => {
+			var actual = connections.get(invitation);
+			if(actual.waitings.includes(socket.username)){
+				actual.waitings.splice(actual.waitings.indexOf(socket.username), 1);
+				actual.socket.emit("waitings", actual.waitings);
+			}
+		});
+
+		current.waitings.forEach((waiting) => {
+			var actual = connections.get(waiting);
+			if(actual.invitations.includes(socket.username)){
+				actual.invitations.splice(actual.invitations.indexOf(socket.username), 1);
+				actual.socket.emit("invitations", actual.invitations);
+			}
+		});
+
+		other.invitations.forEach((invitation) => {
+			var actual = connections.get(invitation);
+			if(actual.waitings.includes(user)){
+				actual.waitings.splice(actual.waitings.indexOf(user), 1);
+				actual.socket.emit("waitings", actual.waitings);
+			}
+		});
+
+		other.waitings.forEach((waiting) => {
+			var actual = connections.get(waiting);
+			if(actual.invitations.includes(user)){
+				actual.invitations.splice(actual.invitations.indexOf(user), 1);
+				actual.socket.emit("invitations", actual.invitations);
+			}
+		});
+
+		// TODO: empty the 2 players invitations and waitings and inform them
+		current.invitations = [];
+		current.waitings = [];
+		current.socket.emit("invitations", current.invitations);
+		current.socket.emit("waitings", current.waitings);
+
+		other.invitations = [];
+		other.waitings = [];
+		other.socket.emit("invitations", other.invitations);
+		other.socket.emit("waitings", other.waitings);
+
+		// TODO: start game
+
 	});
 
 	socket.on("rejectChallenge", (user) => {
