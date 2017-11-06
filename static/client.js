@@ -50,6 +50,24 @@ socket.on("waitings", (waitings) => {
 	});
 });
 
+socket.on("defineMap", (mapTime) => {
+	console.log("MAP!!!");
+	var timeLeft = mapTime;
+	var timer = setInterval(function(){
+		if(timeLeft > 0){
+			timeLeft--;
+			console.log(timeLeft);
+		}else{
+			console.log("EXPIRED!!!");
+			clearInterval(timer);
+		}
+	}, 1000);
+});
+
+socket.on("noMap", () => {
+	alert("NO MAP MADAFAKA!!!");
+});
+
 socket.on("disconnect", () => {
 	console.log("BYE BYE");
 });

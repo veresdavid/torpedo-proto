@@ -57,7 +57,8 @@ function connectUser(socket, result){
 		dbdata: result,
 		socket: socket,
 		invitations: [],
-		waitings: []
+		waitings: [],
+		game: null
 	};
 	connections.set(username, connection);
 
@@ -190,6 +191,49 @@ function connectUser(socket, result){
 		other.socket.emit("waitings", other.waitings);
 
 		// TODO: start game
+
+		// players
+		var players = new Array(2);
+		// who is the first?
+		var index = Math.round(Math.random());
+		players[index] = current;
+		players[1 - index] = other;
+		// maps
+		var maps = new Array(2);
+		// turn
+		var turn = 0;
+		// ready?
+		var ready = 2;
+		// timeouts
+		var timeouts = new Array(2);
+
+		// game object
+		var game = {
+			players: players,
+			maps: maps,
+			turn: turn,
+			ready: ready,
+			timeouts: timeouts
+		};
+
+		// store game reference in sockets
+		current.socket.game = game;
+		other.socket.game = game;
+
+		// ask for maps
+		var mapTime = 10; // in seconds
+		current.socket.emit("defineMap", mapTime);
+		other.socket.emit("defineMap", mapTime);
+		timeouts[0] = setTimeout(function() {
+			players[0].socket.emit("noMap");
+			timeouts[0] = null;
+		}, mapTime * 1000);
+		timeouts[1] = setTimeout(function() {
+			players[1].socket.emit("noMap");
+			timeouts[1] = null;
+		}, mapTime * 1000);
+
+		// store it in the connection objects
 
 	});
 
