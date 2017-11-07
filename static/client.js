@@ -55,6 +55,8 @@ socket.on("game", () => {
 	hideLobbyElements();
 	// reveal game elements
 	showGameElements();
+	// clear chat
+	$("#chat").empty();
 });
 
 socket.on("defineMap", (mapTime) => {
@@ -81,6 +83,10 @@ socket.on("waiting", () => {
 
 socket.on("noMap", () => {
 	alert("NO MAP MADAFAKA!!!");
+});
+
+socket.on("dodge", () => {
+	console.log("GAME HAS BEEN DODGED!!!");
 });
 
 socket.on("disconnect", () => {

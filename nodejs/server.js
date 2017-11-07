@@ -61,10 +61,12 @@ function connectUser(socket, result){
 		dbdata: result,
 		socket: socket,
 		invitations: [],
-		waitings: [],
-		game: null
+		waitings: []
 	};
 	connections.set(username, connection);
+
+	// join socket to lobby room
+	socket.join("lobby");
 
 	console.log(getOnlineUsers());
 
@@ -73,19 +75,43 @@ function connectUser(socket, result){
 	socket.emit("authSuccess");
 
 	socket.emit("onlineUsers", getOnlineUsers());
-	socket.broadcast.emit("onlineUsers", getOnlineUsers());
-	socket.broadcast.emit("userConnected", result.username);
+	// socket.broadcast.emit("onlineUsers", getOnlineUsers());
+	// socket.broadcast.emit("userConnected", result.username);
+	socket.to("lobby").emit("onlineUsers", getOnlineUsers());
+	socket.to("lobby").emit("userConnected", result.username);
 
 	socket.on("disconnect", () => {
+
+		// if in game
+		if(socket.game!=null){
+			dodgeGame(socket.game);
+		}
+
+		// if not in game
+		if(socket.game==null){
+			// TODO: delete inviations and waitings and inform other players
+		}
+
 		// TODO: remove user from map
 		connections.delete(socket.username);
-		socket.broadcast.emit("onlineUsers", getOnlineUsers());
-		socket.broadcast.emit("userDisconnected", socket.username);
+		// socket.broadcast.emit("onlineUsers", getOnlineUsers());
+		// socket.broadcast.emit("userDisconnected", socket.username);
+		socket.to("lobby").emit("onlineUsers", getOnlineUsers());
+		socket.to("lobby").emit("userDisconnected", socket.username);
 	});
 
 	socket.on("userMessage", (message) => {
-		socket.broadcast.emit("userMessage", socket.username, message);
-		socket.emit("userMessage", socket.username, message);
+
+		if(socket.game==null){
+			// socket.broadcast.emit("userMessage", socket.username, message);
+			socket.to("lobby").emit("userMessage", socket.username, message);
+			socket.emit("userMessage", socket.username, message);
+		}else{
+			var room = socket.game.room;
+			socket.to(room).emit("userMessage", socket.username, message);
+			socket.emit("userMessage", socket.username, message);
+		}
+
 	});
 
 	socket.on("challenge", (user) => {
@@ -210,6 +236,8 @@ function connectUser(socket, result){
 		var ready = [false, false];
 		// timeout
 		var timeout = null;
+		// game chat room
+		var room = players[0].socket.username + "-vs-" + players[1].socket.username;
 
 		// game object
 		var game = {
@@ -217,12 +245,22 @@ function connectUser(socket, result){
 			maps: maps,
 			turn: turn,
 			ready: ready,
-			timeout: timeout
+			timeout: timeout,
+			room: room
 		};
 
 		// store game reference in sockets
 		current.socket.game = game;
 		other.socket.game = game;
+
+		// join players to chat room
+		current.socket.join(room);
+		current.socket.leave("lobby");
+		other.socket.join(room);
+		other.socket.leave("lobby");
+
+		// inform users in lobby if 2 players go for a game
+		current.socket.to("lobby").emit("onlineUsers", getLobbyUsers());
 
 		// init game interface for players
 		current.socket.emit("game");
@@ -395,6 +433,18 @@ function connectUser(socket, result){
 
 }
 
+function getLobbyUsers(){
+
+	var lobbyUsers = [];
+
+	connections.forEach((value, key, map) => {
+		if(value.socket.game==null) lobbyUsers.push(key);
+	});
+
+	return lobbyUsers;
+
+}
+
 function validateUser(socket, username, password){
 
 	console.log("VALIDATING");
@@ -464,8 +514,31 @@ function startMapState(game){
 }
 
 function dodgeGame(game){
+
 	console.log(game.players[0].socket.username + " vs " + game.players[1].socket.username + " game has been dodged!!!");
-	// TODO: do it!!
+
+	// set timeout to null
+	if(game.timeout!=null){
+		clearTimeout(game.timeout);
+		game.timeout = null;
+	}
+
+	// save something?
+
+	// inform players about dodge
+	game.players[0].socket.emit("dodge");
+	game.players[1].socket.emit("dodge");
+
+	// go back to lobby room
+	game.players[0].socket.leave(game.room);
+	game.players[1].socket.leave(game.room);
+	game.players[0].socket.join("lobby");
+	game.players[1].socket.join("lobby");
+
+	// null game references
+	game.players[0].socket.game = null;
+	game.players[1].socket.game = null;
+
 }
 
 function validateMap(map){
