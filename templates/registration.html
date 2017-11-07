@@ -1,27 +1,53 @@
 <!doctype html>
 
 <html lang="en">
-<head>
-  <meta charset="utf-8">
+	<head>
+		<meta charset="utf-8">
 
-  <title>Registration</title>
-  <meta name="description" content="The HTML5 Herald">
-  <meta name="author" content="SitePoint">
+		<title>Registration</title>
+		<meta name="description" content="Torpedo - registration page">
 
-  <script src="{{ url_for('static', filename='jquery.js') }}"></script>
-  <script src="{{ url_for('static', filename='registration.js') }}"></script>
+		<link href="{{ url_for('static', filename='font-awesome.css') }}" rel="stylesheet" type="text/css" /> 
+		<link href="{{ url_for('static', filename='bootstrap-min.css') }}" rel="stylesheet" type="text/css" /> 
+		<link href="{{ url_for('static', filename='login-page.css') }}" rel="stylesheet" type="text/css" /> 
+		<script src="{{ url_for('static', filename='jquery.js') }}"></script>
+		<script src="{{ url_for('static', filename='registration.js') }}"></script>
+	</head>
+	<body>
+		<div class="container">
+		    <div class="omb_login">
+		    	<h3 class="omb_authTitle">Sign up or <a href="./login">Login</a></h3>
 
-</head>
+				<div class="row omb_row-sm-offset-3">
+					<div class="col-xs-12 col-sm-6">	
+						<div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-user"></i></span>
+							<input type="text" class="form-control" id="username" name="username" placeholder="username" autocomplete="off" />
+						</div>
+						<span class="help-block"></span>
 
-<body>
+						<div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+							<input type="text" class="form-control" id="email" name="email" placeholder="email address" autocomplete="off" />
+						</div>
+						<span class="help-block"></span>
+												
+						<div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-lock"></i></span>
+							<input  type="password" class="form-control" id="password" name="password" placeholder="password" />
+						</div>
+		                <span class="help-block"></span>
 
-	<h1>REGISTRATION PAGE</h1>
-
-	<input type="text" id="username" placeholder="username" autocomplete="off" /><br/>
-	<input type="password" id="password" placeholder="password" /><br/>
-
-	<button onclick="postRegistration()">REGISTRATION</button>
-
-</body>
-
+		                <div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-lock"></i></span>
+							<input type="text" class="form-control" id="re-password" name="re-password" placeholder="password again" />
+						</div>
+						<span class="help-block"></span>
+							
+						<button class="btn btn-lg btn-primary btn-block myButton" onclick="postRegistration()" >Sign up</button>
+					</div>
+		    	</div>	
+			</div>
+		</div>
+	</body>
 </html>
