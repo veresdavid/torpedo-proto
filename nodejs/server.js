@@ -9,6 +9,10 @@ var url = "mongodb://localhost:27017/torpedo-proto";
 
 var connections = new Map();
 
+// in seconds
+const MAP_TIME = 30;
+const TURN_TIME = 10;
+
 function getOnlineUsers(){
 	return Array.from(connections.keys());
 }
@@ -203,9 +207,9 @@ function connectUser(socket, result){
 		// turn
 		var turn = 0;
 		// ready?
-		var ready = 2;
-		// timeouts
-		var timeouts = new Array(2);
+		var ready = [false, false];
+		// timeout
+		var timeout = null;
 
 		// game object
 		var game = {
@@ -213,25 +217,19 @@ function connectUser(socket, result){
 			maps: maps,
 			turn: turn,
 			ready: ready,
-			timeouts: timeouts
+			timeout: timeout
 		};
 
 		// store game reference in sockets
 		current.socket.game = game;
 		other.socket.game = game;
 
-		// ask for maps
-		var mapTime = 10; // in seconds
-		current.socket.emit("defineMap", mapTime);
-		other.socket.emit("defineMap", mapTime);
-		timeouts[0] = setTimeout(function() {
-			players[0].socket.emit("noMap");
-			timeouts[0] = null;
-		}, mapTime * 1000);
-		timeouts[1] = setTimeout(function() {
-			players[1].socket.emit("noMap");
-			timeouts[1] = null;
-		}, mapTime * 1000);
+		// init game interface for players
+		current.socket.emit("game");
+		other.socket.emit("game");
+
+		console.log("WAITING FOR PLAYERS TO GET READY!!!");
+		// TODO: maybe a timeout for here too?
 
 		// store it in the connection objects
 
@@ -286,6 +284,115 @@ function connectUser(socket, result){
 
 	});
 
+	socket.on("ready", () => {
+
+		// TODO: NOT SECURE!!! USE ARRAY!!!
+
+		// in game?
+		if(socket.game==null){
+			console.log("NOT IN GAME!!!");
+			return;
+		}
+
+		// in "waiting for ready" status?
+		var game = socket.game;
+		var playerIndex = getPlayerIndex(game, socket);
+		if(arePlayersReady(game)){
+			console.log("NOT IN WAITING FOR READY STATUS!!!");
+			return;
+		}
+
+		// player is ready
+		game.ready[playerIndex] = true;
+
+		// if ready==0 then ask maps from the players
+		if(arePlayersReady(game)){
+
+			// ask player to define map and start timeout function
+			startMapState(game);
+
+		}
+
+	});
+
+	socket.on("map", (map) => {
+
+		// in game?
+		if(socket.game==null){
+			console.log("NOT IN GAME!!!");
+			return;
+		}
+
+		// already have map?
+		var game = socket.game;
+		var index = (game.players[0].socket==socket)?(0):(1);
+		if(game.maps[index]!=null){
+			console.log("ALREADY SENT MAP!!!");
+			return;
+		}
+
+		// in map state?
+		if(!arePlayersReady(game)){
+			console.log("PLAYERS NOT READY YET!!!");
+			return;
+		}
+
+		// valid map?
+		var validMap = validateMap(map);
+		if(!validMap){
+			console.log("NOT VALID MAP!!!");
+			// TODO: send message to socket?
+			return;
+		}
+
+		// set map for the player
+		console.log(game.players[index].socket.username + " is #" + index);
+		game.maps[index] = map;
+
+		// if have all the maps
+		if(game.maps[0]!=null && game.maps[1]!=null){
+
+			// stop timeout if players have sent their map
+			clearTimeout(game.timeout);
+			game.timeout = null;
+
+			// request first player to shot
+			// game.players[game.turn].socket.emit("turn");
+			nextTurn(game);
+
+		}
+
+	});
+
+	socket.on("turn", () => {
+
+		// is it the players turn?
+		var game = socket.game;
+		var playerIndex = getPlayerIndex(game, socket);
+		if(game.turn!=playerIndex){
+			console.log("NOT YOUR TURN!!!");
+			return;
+		}
+
+		// valid shot position?
+
+		// if everything is valid, stop the timeouts
+		clearTimeout(game.timeout);
+		game.timeout = null;
+
+		// update maps
+
+		// check if game is not over yet, if over, inform players, save, and take the back to lobby
+
+		// if not over yet, inform players about mab status
+
+		// next players turn
+		var nextPlayerIndex = 1 - game.turn;
+		game.turn = nextPlayerIndex;
+		nextTurn(game);
+
+	});
+
 }
 
 function validateUser(socket, username, password){
@@ -335,5 +442,153 @@ function validateUser(socket, username, password){
 		});
 
 	});
+
+}
+
+function startMapState(game){
+
+	// request maps from the players
+	game.players[0].socket.emit("defineMap", MAP_TIME);
+	game.players[1].socket.emit("defineMap", MAP_TIME);
+
+	// set timeout function
+	game.timeout = setTimeout(function() {
+
+		if(game.maps[0]==null || game.maps[1]==null){
+			game.timeout = null;
+			dodgeGame(game);
+		}
+
+	}, MAP_TIME * 1000);
+
+}
+
+function dodgeGame(game){
+	console.log(game.players[0].socket.username + " vs " + game.players[1].socket.username + " game has been dodged!!!");
+	// TODO: do it!!
+}
+
+function validateMap(map){
+	// validate if fields exist and have the exact lengths
+	// ONE
+	if(!arrayExistsAndHasCorrectSize(map.one, 4)) return false;
+	// TWO
+	if(!arrayExistsAndHasCorrectSize(map.two, 3)) return false;
+	// THREE
+	if(!arrayExistsAndHasCorrectSize(map.three, 2)) return false;
+	// FOUR
+	if(!arrayExistsAndHasCorrectSize(map.four, 1)) return false;
+
+	// validate parts inside ships
+	var positions = [];
+	// ONE
+	for(var i=0; i<map.one.length; i++){
+		var ship = map.one[i];
+		if(!arrayExistsAndHasCorrectSize(ship.position, 1)) return false;
+		positions = positions.concat(ship.position);
+	}
+	// TWO
+	for(var i=0; i<map.two.length; i++){
+		var ship = map.two[i];
+		if(!arrayExistsAndHasCorrectSize(ship.position, 2)) return false;
+		positions = positions.concat(ship.position);
+	}
+	// THREE
+	for(var i=0; i<map.three.length; i++){
+		var ship = map.three[i];
+		if(!arrayExistsAndHasCorrectSize(ship.position, 3)) return false;
+		positions = positions.concat(ship.position);
+	}
+	// FOUR
+	for(var i=0; i<map.four.length; i++){
+		var ship = map.four[i];
+		if(!arrayExistsAndHasCorrectSize(ship.position, 4)) return false;
+		positions = positions.concat(ship.position);
+	}
+
+	// validate all positions
+	var positionValues = new Set();
+	for(var i=0; i<positions.length; i++){
+		var position = positions[i];
+		if(!isValidPosition(position)) return false;
+		var posVal = positionValue(position);
+		positionValues.add(posVal);
+	}
+
+	// validate if parts not overlap
+	var numberOfShips = 4*1 + 3*2 + 2*3 + 1*4;
+	if(positionValues.size!=numberOfShips) return false;
+
+	return true;
+}
+
+function arrayExistsAndHasCorrectSize(array, size){
+
+	if(array==null) return false;
+
+	if(array.constructor!==Array) return false;
+
+	if(array.length!=size) return false;
+
+	return true;
+
+}
+
+function isValidPosition(position){
+
+	if(position.x==null || position.y==null) return false;
+
+	var x = position.x;
+	var y = position.y;
+
+	if(x<0 || x>9 || y<0 || y>9) return false;
+
+	return true;
+
+}
+
+function positionValue(position){
+	return position.x * 10 + position.y;
+}
+
+function arePlayersReady(game){
+	return game.ready[0]==true && game.ready[1]==true;
+}
+
+function getPlayerIndex(game, socket){
+
+	if(game.players[0].socket==socket) return 0;
+
+	if(game.players[1].socket==socket) return 1;
+
+	return -1;
+
+}
+
+function nextTurn(game){
+
+	// send messages to players
+	// turn
+	// waiting for other
+	var actual = game.players[game.turn];
+	var waiting = game.players[1-game.turn];
+
+	actual.socket.emit("turn", TURN_TIME);
+	waiting.socket.emit("waiting", TURN_TIME);
+
+	// start timeout
+	game.timeout = setTimeout(function() {
+
+		// actual player didnt do anything, so next player is coming
+		var nextPlayerIndex = 1 - game.turn;
+		game.turn = nextPlayerIndex;
+
+		// null timeout
+		game.timeout = null;
+
+		// nextTurn
+		nextTurn(game);
+
+	}, TURN_TIME * 1000);
 
 }

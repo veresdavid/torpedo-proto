@@ -50,10 +50,17 @@ socket.on("waitings", (waitings) => {
 	});
 });
 
+socket.on("game", () => {
+	// hide non-game elements
+	hideLobbyElements();
+	// reveal game elements
+	showGameElements();
+});
+
 socket.on("defineMap", (mapTime) => {
 	console.log("MAP!!!");
 	var timeLeft = mapTime;
-	var timer = setInterval(function(){
+	/*var timer = setInterval(function(){
 		if(timeLeft > 0){
 			timeLeft--;
 			console.log(timeLeft);
@@ -61,8 +68,16 @@ socket.on("defineMap", (mapTime) => {
 			console.log("EXPIRED!!!");
 			clearInterval(timer);
 		}
-	}, 1000);
+	}, 1000);*/
 });
+
+socket.on("turn", () => {
+	console.log("YOUR TURN BOY");
+});
+
+socket.on("waiting", () => {
+	console.log("WAITING FOR OTHER PLAYER");
+})
 
 socket.on("noMap", () => {
 	alert("NO MAP MADAFAKA!!!");
@@ -106,6 +121,10 @@ function sendMessage(){
 
 }
 
+$(document).ready(function(){
+	$("#game").css("display", "none");
+});
+
 function challenge(user){
 	socket.emit("challenge", user);
 }
@@ -120,4 +139,21 @@ function rejectChallenge(user){
 
 function cancelWaiting(user){
 	socket.emit("cancelWaiting", user);
+}
+
+function hideLobbyElements(){
+	$("#lobby").css("display", "none");
+}
+
+function showGameElements(){
+	$("#game").css("display", "block");
+}
+
+function ready(){
+	socket.emit("ready");
+	$("#ready").css("display", "none");
+}
+
+function turn(){
+	socket.emit("turn");
 }
