@@ -17,14 +17,6 @@ function getOnlineUsers(){
 	return Array.from(connections.keys());
 }
 
-function getOnlineUsersExcept(username){
-	names = getOnlineUsers();
-	if(names.includes(username)){
-		names.splice(names.indexOf(username), 1);
-	}
-	return names;
-}
-
 io.on("connection", function(socket){
 
 	console.log("NEW CONNECTION");
@@ -74,10 +66,10 @@ function connectUser(socket, result){
 
 	socket.emit("authSuccess");
 
-	socket.emit("onlineUsers", getOnlineUsers());
+	socket.emit("onlineUsers", getLobbyUsers());
 	// socket.broadcast.emit("onlineUsers", getOnlineUsers());
 	// socket.broadcast.emit("userConnected", result.username);
-	socket.to("lobby").emit("onlineUsers", getOnlineUsers());
+	socket.to("lobby").emit("onlineUsers", getLobbyUsers());
 	socket.to("lobby").emit("userConnected", result.username);
 
 	socket.on("disconnect", () => {
@@ -90,13 +82,33 @@ function connectUser(socket, result){
 		// if not in game
 		if(socket.game==null){
 			// TODO: delete inviations and waitings and inform other players
+			var current = connections.get(socket.username);
+			// delete invitations
+			current.invitations.forEach((invitation) => {
+				var actual = connections.get(invitation);
+				if(actual.waitings.includes(socket.username)){
+					actual.waitings.splice(actual.waitings.indexOf(socket.username), 1);
+					actual.socket.emit("waitings", actual.waitings);
+				}
+			});
+			// delete waitings
+			current.waitings.forEach((waiting) => {
+				var actual = connections.get(waiting);
+				if(actual.invitations.includes(socket.username)){
+					actual.invitations.splice(actual.invitations.indexOf(socket.username), 1);
+					actual.socket.emit("invitations", actual.invitations);
+				}
+			});
+			// empty arrays
+			current.invitations = [];
+			current.waitings = [];
 		}
 
 		// TODO: remove user from map
 		connections.delete(socket.username);
 		// socket.broadcast.emit("onlineUsers", getOnlineUsers());
 		// socket.broadcast.emit("userDisconnected", socket.username);
-		socket.to("lobby").emit("onlineUsers", getOnlineUsers());
+		socket.to("lobby").emit("onlineUsers", getLobbyUsers());
 		socket.to("lobby").emit("userDisconnected", socket.username);
 	});
 
@@ -145,6 +157,10 @@ function connectUser(socket, result){
 		}
 
 		// TODO: check if not in game
+		if(other.socket.game!=null){
+			console.log("ALREADY IN GAME!!!");
+			return;
+		}
 
 		// TODO: update invitations on other user
 		other.invitations.push(socket.username);
