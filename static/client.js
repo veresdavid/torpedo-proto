@@ -171,6 +171,16 @@ socket.on("myTurnResult", (turnResult) => {
 	console.log(turnResult);
 
 	// TODO: turnResult object contains the information about the shot
+	// structure:
+	/*
+		turnResult = {
+			position: {x: .., y: ..},	<-- a coordinate pair
+			hit: true|false,			<-- did we hit something?
+			sunk: true|false			<-- did it sink?
+		};
+	*/
+	// display shots or ship parts in the game field
+	// cant aim those coordinates where we have already sent shot
 
 });
 
@@ -180,6 +190,7 @@ socket.on("enemyTurnResult", (turnResult) => {
 	console.log(turnResult);
 
 	// TODO: turnResult object contains the information about the shot
+	// same as above
 
 });
 
@@ -321,7 +332,7 @@ function ready(){
 function turn(){
 
 	// TODO: need the position object
-	// var position = ...
+	// var position = ...	<-- just put the targeted position inside this variable
 
 	// send the shot to the server
 	socket.emit("turn", position);
