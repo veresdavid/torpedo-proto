@@ -1,30 +1,38 @@
 <!doctype html>
 
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-
-  <title>{{ username }}</title>
-  <meta name="description" content="The HTML5 Herald">
-  <meta name="author" content="SitePoint">
-  <script src="{{ url_for('static', filename='jquery.js') }}"></script>
-
-</head>
-
-<body>
-
-	<h1>{{ username }}</h1>
-
-  <p>Number of wins: {{ win }}</p>
-
-  <p>Number of losses: {{ lose }}</p>
-
-  <div id="games">
-    {% for game in games %}
-      <p>{{ game.player1 }} vs {{ game.player2 }} | Winner: {{ game.winner }} | Loser: {{ game.loser }} | Date: {{ game.date }}</p>
-    {% endfor %}
-  </div>
-
-</body>
-
+  <head>
+    <meta charset="utf-8">
+    <title>{{ username }}</title>
+    <meta name="description" content="Torpedo - user page">
+    <script src="{{ url_for('static', filename='jquery.js') }}"></script>
+    <link href="{{ url_for('static', filename='user.css') }}" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+  	<h1>{{ username }}</h1>
+    <p>Number of wins: {{ win }}</p>
+    <p>Number of losses: {{ lose }}</p>
+    <table class="responstable">
+      <thead>
+        <tr>
+          <th>Player1's name</th>
+          <th>Player2's name</th>
+          <th>Winner</th>
+          <th>Loser</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for game in games %}
+        <tr>
+          <td>{{ game.player1 }}</td>
+          <td>{{ game.player2 }}</td>
+          <td>{{ game.winner }}</td>
+          <td>{{ game.loser }}</td>
+          <td>{{ game.date }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
 </html>
