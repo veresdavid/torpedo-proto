@@ -329,7 +329,20 @@ function ready(){
 	$("#ready").css("display", "none");
 }
 
+function map(){
+
+	// TODO: assign this function to a button
+
+	// TODO: get the map object
+	// var map = ...	<-- assign the map object to this variable
+
+	socket.emit("map", map);
+
+}
+
 function turn(){
+
+	// TODO: assign this function to a button
 
 	// TODO: need the position object
 	// var position = ...	<-- just put the targeted position inside this variable
