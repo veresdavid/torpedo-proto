@@ -19,8 +19,7 @@ function postLogin(){
 
 			}else{
 
-				// TODO: show the error message in a div
-				alert("Invalid username or password!");
+				$("#errorMessage").text("Invalid username or password!");
 
 			}
 

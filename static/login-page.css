@@ -9,10 +9,10 @@
 	line-height: 300%;
 }		
 
-.omb_login .omb_loginForm .input-group i {
+.omb_login .input-group i {
 	width: 2em;
 }
-.omb_login .omb_loginForm  .help-block {
+.omb_login .help-block {
     color: red;
 }
 
