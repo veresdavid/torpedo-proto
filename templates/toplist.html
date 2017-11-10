@@ -1,26 +1,34 @@
 <!doctype html>
 
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-
-  <title>Toplist</title>
-  <meta name="description" content="The HTML5 Herald">
-  <meta name="author" content="SitePoint">
-  <script src="{{ url_for('static', filename='jquery.js') }}"></script>
-
-</head>
-
-<body>
-
-	<h1>Top 10 players</h1>
-
-  <div id="games">
-    {% for player in toplist %}
-      <p>{{ player.rank }}. | <a href="/user/{{ player.username }}">{{ player.username }}</a></p>
-    {% endfor %}
-  </div>
-
-</body>
-
+  <head>
+    <meta charset="utf-8">
+    <title>Toplist</title>
+    <meta name="description" content="Torpedo - toplist page">
+    <script src="{{ url_for('static', filename='jquery.js') }}"></script>
+    <link href="{{ url_for('static', filename='toplist-user.css') }}" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+  	<h1>Top 10 players</h1>
+    <table class="responstable">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Username</th>
+            <th>Wins</th>
+            <th>Losses</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for player in toplist %}
+          <tr>
+            <td>{{ player.rank }}</td>
+            <td><a href="/user/{{ player.username }}">{{ player.username }}</a></td>
+            <td><!--{{ TODO }}--></td>
+            <td><!--{{ TODO }}--></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+  </body>
 </html>
