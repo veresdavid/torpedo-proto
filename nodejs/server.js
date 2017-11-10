@@ -246,6 +246,10 @@ function connectUser(socket, result){
 		players[1 - index] = other;
 		// maps
 		var maps = new Array(2);
+		// ships
+		var ships = new Array(2);
+		// shots
+		var shots = [new Set(), new Set()];
 		// turn
 		var turn = 0;
 		// ready?
@@ -259,6 +263,8 @@ function connectUser(socket, result){
 		var game = {
 			players: players,
 			maps: maps,
+			ships: ships,
+			shots: shots,
 			turn: turn,
 			ready: ready,
 			timeout: timeout,
@@ -403,6 +409,9 @@ function connectUser(socket, result){
 		console.log(game.players[index].socket.username + " is #" + index);
 		game.maps[index] = map;
 
+		// store ships
+		game.ships[index] = extractShipsFromMap(game.maps[index]);
+
 		// if have all the maps
 		if(game.maps[0]!=null && game.maps[1]!=null){
 
@@ -418,10 +427,22 @@ function connectUser(socket, result){
 
 	});
 
-	socket.on("turn", () => {
+	socket.on("turn", (position) => {
+
+		// in game??
+		if(socket.game==null){
+			console.log("NOT IN GAME");
+			return;
+		}
+
+		// maps ready??
+		var game = socket.game;
+		if(game.maps[0]==null || game.maps[1]==null){
+			console.log("MAPS NOT READY YET!!!");
+			return;
+		}
 
 		// is it the players turn?
-		var game = socket.game;
 		var playerIndex = getPlayerIndex(game, socket);
 		if(game.turn!=playerIndex){
 			console.log("NOT YOUR TURN!!!");
@@ -429,21 +450,95 @@ function connectUser(socket, result){
 		}
 
 		// valid shot position?
+		if(!isValidPosition(position)){
+			console.log("INVALID POSITION!!!");
+			return;
+		}
+
+		// havent shot there already??
+		if(game.shots[playerIndex].has(positionValue(position))){
+			console.log("ALREADY SHOT THERE!!!");
+			return;
+		}
 
 		// if everything is valid, stop the timeouts
 		clearTimeout(game.timeout);
 		game.timeout = null;
 
-		// update maps
+		// store shot
+		game.shots[playerIndex].add(positionValue(position));
+		console.log(game.shots[playerIndex]);
 
-		// check if game is not over yet, if over, inform players, save, and take the back to lobby
+		// get ship and part index
+		var targetPlayerIndex = 1 - playerIndex;
+		var ships = game.ships[targetPlayerIndex];
+		var result = getShipAndPartIndex(ships, position);
 
-		// if not over yet, inform players about mab status
+		if(result==null){
 
-		// next players turn
-		var nextPlayerIndex = 1 - game.turn;
-		game.turn = nextPlayerIndex;
-		nextTurn(game);
+			// miss
+			var turnResult = createTurnResult(position, false, false);
+
+			// inform players
+			game.players[playerIndex].socket.emit("myTurnResult", turnResult);
+			game.players[targetPlayerIndex].socket.emit("enemyTurnResult", turnResult);
+
+			// next player comes
+			var nextPlayerIndex = 1 - game.turn;
+			game.turn = nextPlayerIndex;
+			nextTurn(game);
+
+		}else{
+
+			// hit
+
+			// update ships
+			ships[result.shipIndex][result.partIndex] = null;
+
+			// sunk?
+			var sunk = isShipSunk(ships[result.shipIndex]);
+			var turnResult = createTurnResult(position, true, sunk);
+
+			// inform players
+			game.players[playerIndex].socket.emit("myTurnResult", turnResult);
+			game.players[targetPlayerIndex].socket.emit("enemyTurnResult", turnResult);
+
+			var gameOver = areAllShipSunk(ships);
+
+			if(gameOver){
+
+				// inform players
+				game.players[playerIndex].socket.emit("win");
+				game.players[targetPlayerIndex].socket.emit("lose");
+
+				// save data
+
+				// null things
+
+				// set timeout to null
+				if(game.timeout!=null){
+					clearTimeout(game.timeout);
+					game.timeout = null;
+				}
+
+				// go back to lobby room
+				game.players[0].socket.leave(game.room);
+				game.players[1].socket.leave(game.room);
+				game.players[0].socket.join("lobby");
+				game.players[1].socket.join("lobby");
+
+				// null game references
+				game.players[0].socket.game = null;
+				game.players[1].socket.game = null;
+
+			}else{
+
+				// same player comes
+				nextTurn(game);
+
+			}
+
+		}
 
 	});
 
@@ -668,16 +763,108 @@ function nextTurn(game){
 	// start timeout
 	game.timeout = setTimeout(function() {
 
+		console.log("KECSKE");
+
 		// actual player didnt do anything, so next player is coming
 		var nextPlayerIndex = 1 - game.turn;
 		game.turn = nextPlayerIndex;
 
 		// null timeout
+		clearTimeout(game.timeout);
 		game.timeout = null;
 
 		// nextTurn
 		nextTurn(game);
 
 	}, TURN_TIME * 1000);
+
+}
+
+function extractShipsFromMap(map){
+
+	var ships = [];
+
+	// ONE
+	map.one.forEach((ship) => {
+		ships.push(ship.position);
+	});
+
+	// TWO
+	map.two.forEach((ship) => {
+		ships.push(ship.position);
+	});
+
+	// THREE
+	map.three.forEach((ship) => {
+		ships.push(ship.position);
+	});
+
+	// FOUR
+	map.four.forEach((ship) => {
+		ships.push(ship.position);
+	});
+
+	return ships;
+
+}
+
+function getShipAndPartIndex(ships, position){
+
+	for(var shipIndex=0; shipIndex<ships.length; shipIndex++){
+
+		var ship = ships[shipIndex];
+
+		for(var partIndex=0; partIndex<ship.length; partIndex++){
+
+			var part = ship[partIndex];
+
+			if(part!=null && part.x==position.x && part.y==position.y){
+
+				var result = {
+					shipIndex: shipIndex,
+					partIndex: partIndex
+				};
+
+				return result;
+
+			}
+
+		}
+
+	}
+
+	return null;
+
+}
+
+function createTurnResult(position, hit, sunk){
+
+	var result = {
+		position: position,
+		hit: hit,
+		sunk: sunk
+	};
+
+	return result;
+
+}
+
+function isShipSunk(ship){
+
+	for(var i=0; i<ship.length; i++){
+		if(ship[i]!=null) return false;
+	}
+
+	return true;
+
+}
+
+function areAllShipSunk(ships){
+
+	for(var i=0; i<ships.length; i++){
+		if(!isShipSunk(ships[i])) return false;
+	}
+
+	return true;
 
 }
