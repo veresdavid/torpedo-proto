@@ -2,10 +2,10 @@ function postRegistration(){
 
 	var data = {
 		username: $("#username").val(),
-		password: $("#password").val()
+		email: $("#email").val(),
+		password: $("#password").val(),
+		repassword: $("#re-password").val()
 	};
-
-	console.log(data);
 
 	$.post({
 		url: "/registration",
@@ -15,13 +15,29 @@ function postRegistration(){
 		success: (resp) => {
 
 			if(resp.success){
-				console.log("SUCCESSFUL REGISTRATION");
+				
+				clearForm();
+
+				// TODO: display success message in a div
+				alert("SUCCESSFUL REGISTRATION");
+
 			}else{
-				console.log("REGISTRATION FAILED");
-				console.log(resp.reason);
+
+				var error = resp.error;
+
+				// TODO: show error in a div or something better than an alertbox
+				alert(error);
+
 			}
 
 		}
 	});
 
+}
+
+function clearForm(){
+	$("#username").val("");
+	$("#email").val("");
+	$("#password").val("");
+	$("#re-password").val("");
 }

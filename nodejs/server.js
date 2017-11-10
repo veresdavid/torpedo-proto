@@ -515,6 +515,17 @@ function connectUser(socket, result){
 				game.players[targetPlayerIndex].socket.emit("lose");
 
 				// save data
+				var gameData = {
+					player1: game.players[0].socket.username,
+					player2: game.players[1].socket.username,
+					map1: game.maps[0],
+					map2: game.maps[1],
+					winner: game.players[playerIndex].socket.username,
+					loser: game.players[targetPlayerIndex].socket.username,
+					date: new Date()
+				};
+
+				saveGameData(gameData);
 
 				// null things
 
@@ -602,6 +613,36 @@ function validateUser(socket, username, password){
 			db.close();
 
 			connectUser(socket, result);
+
+		});
+
+	});
+
+}
+
+function saveGameData(gameData){
+
+	console.log("SAVING GAME DATA");
+
+	MongoClient.connect(url, (err, db) => {
+
+		if(err){
+			console.log("MONGODB ERROR OCCURED :(");
+			db.close();
+			return;
+		}
+
+		db.collection("games").insertOne(gameData, (err, result) => {
+
+			if(err){
+				console.log("INSERT ONE ERROR OCCURED :(");
+				db.close();
+				return;
+			}
+
+			console.log("GAME HAS BEEN SAVED!");
+
+			db.close();
 
 		});
 

@@ -69,7 +69,6 @@ socket.on("defineMap", (mapTime) => {
 
 	console.log("MAP!!!");
 
-	// TODO: timer refresh
 	timeLeft = mapTime;
 
 	$("#status").text("Define your map! You have " + timeLeft + " seconds left...");
@@ -147,7 +146,7 @@ socket.on("waiting", (turnTime) => {
 
 socket.on("dodge", () => {
 
-	// TODO: inform the player about the dodge, probably and alert?
+	// TODO: inform the player about the dodge
 	alert("Game dodged!");
 
 	console.log("GAME HAS BEEN DODGED!!!");
@@ -167,22 +166,28 @@ socket.on("dodge", () => {
 });
 
 socket.on("myTurnResult", (turnResult) => {
+
 	console.log("MY TURN RESULT");
 	console.log(turnResult);
+
+	// TODO: turnResult object contains the information about the shot
+
 });
 
 socket.on("enemyTurnResult", (turnResult) => {
+
 	console.log("ENEMY TURN RESULT");
 	console.log(turnResult);
+
+	// TODO: turnResult object contains the information about the shot
+
 });
 
 socket.on("win", () => {
 
 	console.log("WIN!!!");
 
-	// TODO: inform the player about the win, probably and alert?
-
-	console.log("GAME HAS BEEN DODGED!!!");
+	// TODO: inform the player about the win
 
 	hideGameElements();
 
@@ -200,9 +205,7 @@ socket.on("lose", () => {
 
 	console.log("LOSE :(");
 
-	// TODO: inform the player about the lose, probably and alert?
-
-	console.log("GAME HAS BEEN DODGED!!!");
+	// TODO: inform the player about the lose
 
 	hideGameElements();
 
@@ -316,6 +319,10 @@ function ready(){
 }
 
 function turn(){
+
 	// TODO: need the position object
-	socket.emit("turn");
+	// var position = ...
+
+	// send the shot to the server
+	socket.emit("turn", position);
 }

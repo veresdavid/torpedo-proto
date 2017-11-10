@@ -1,0 +1,26 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Toplist</title>
+  <meta name="description" content="The HTML5 Herald">
+  <meta name="author" content="SitePoint">
+  <script src="{{ url_for('static', filename='jquery.js') }}"></script>
+
+</head>
+
+<body>
+
+	<h1>Top 10 players</h1>
+
+  <div id="games">
+    {% for player in toplist %}
+      <p>{{ player.rank }}. | <a href="/user/{{ player.username }}">{{ player.username }}</a></p>
+    {% endfor %}
+  </div>
+
+</body>
+
+</html>

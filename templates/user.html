@@ -1,0 +1,30 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>{{ username }}</title>
+  <meta name="description" content="The HTML5 Herald">
+  <meta name="author" content="SitePoint">
+  <script src="{{ url_for('static', filename='jquery.js') }}"></script>
+
+</head>
+
+<body>
+
+	<h1>{{ username }}</h1>
+
+  <p>Number of wins: {{ win }}</p>
+
+  <p>Number of losses: {{ lose }}</p>
+
+  <div id="games">
+    {% for game in games %}
+      <p>{{ game.player1 }} vs {{ game.player2 }} | Winner: {{ game.winner }} | Loser: {{ game.loser }} | Date: {{ game.date }}</p>
+    {% endfor %}
+  </div>
+
+</body>
+
+</html>
