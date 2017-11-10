@@ -10,8 +10,8 @@ var url = "mongodb://localhost:27017/torpedo-proto";
 var connections = new Map();
 
 // in seconds
-const MAP_TIME = 30;
-const TURN_TIME = 10;
+const MAP_TIME = 60;
+const TURN_TIME = 20;
 
 function getOnlineUsers(){
 	return Array.from(connections.keys());
@@ -412,6 +412,9 @@ function connectUser(socket, result){
 		// store ships
 		game.ships[index] = extractShipsFromMap(game.maps[index]);
 
+		// inform player
+		socket.emit("mapAccepted");
+
 		// if have all the maps
 		if(game.maps[0]!=null && game.maps[1]!=null){
 
@@ -649,6 +652,10 @@ function dodgeGame(game){
 	// null game references
 	game.players[0].socket.game = null;
 	game.players[1].socket.game = null;
+
+	// send lobby users
+	game.players[0].socket.to("lobby").emit("onlineUsers", getLobbyUsers());
+	game.players[0].socket.emit("onlineUsers", getLobbyUsers());
 
 }
 
