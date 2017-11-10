@@ -18,8 +18,7 @@ function postRegistration(){
 				
 				clearForm();
 
-				// TODO: display success message in a div
-				alert("SUCCESSFUL REGISTRATION");
+				$("#successMessage").text("Successful registration");
 
 			}else{
 

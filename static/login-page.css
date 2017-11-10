@@ -16,6 +16,10 @@
     color: red;
 }
 
+.omb_login .success-block {
+    color: green;
+}
+
 	
 @media (min-width: 768px) {
     .omb_login .omb_forgotPwd {
