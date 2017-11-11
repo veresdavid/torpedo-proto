@@ -151,6 +151,12 @@ img {
 	text-align:center;
 }
 
+.chatbox {
+	position:absolute;
+    bottom:0;
+    right:0;
+}
+
 .chat
 {
     list-style: none;
@@ -160,8 +166,6 @@ img {
 
 .chat li
 {
-    margin-bottom: 10px;
-    padding-bottom: 5px;
     border-bottom: 1px dotted #B3A9A9;
 }
 
