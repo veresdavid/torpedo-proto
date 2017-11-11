@@ -52,6 +52,13 @@ def login():
 		else:
 			return jsonify({"success": False})
 
+def registration_error(field, message):
+	error = {
+		"field": field,
+		"message": message
+	}
+	return {"success": False, "error": error}
+
 def registrate_user(data):
 	# extract data from json
 	username = data["username"]
@@ -61,17 +68,17 @@ def registrate_user(data):
 
 	# validate data
 	if re.match(r"[a-zA-Z0-9]{4,10}", username) is None:
-		return jsonify({"success": False, "error": "Username's length must be 4-10 characters!"})
+		return jsonify(registration_error("username", "Username's length must be 4-10 characters!"))
 	if re.match(r".{6,}", password) is None:
-		return jsonify({"success": False, "error": "Password's length must be at least 6 characters!"})
+		return jsonify(registration_error("password", "Password's length must be at least 6 characters!"))
 	if not password==repassword:
-		return jsonify({"success": False, "error": "Passwords doesn't match!"})
+		return jsonify(registration_error("password", "Passwords doesn't match!"))
 	if coll_users.find_one({"username": username}) is not None:
-		return jsonify({"success": False, "error": "Username already in use!"})
+		return jsonify(registration_error("username", "Username already in use!"))
 	if re.match("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$", email) is None:
-		return jsonify({"success": False, "error": "Invalid e-mail address!"})
+		return jsonify(registration_error("email", "Invalid e-mail address!"))
 	if coll_users.find_one({"email": email}) is not None:
-		return jsonify({"success": False, "error": "E-mail has already taken!"})
+		return jsonify(registration_error("email", "E-mail has already taken!"))
 
 	# if data is valid, encrypt password and save user to db
 	hash = sha256_crypt.encrypt(password)
