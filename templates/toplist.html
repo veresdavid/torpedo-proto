@@ -24,8 +24,8 @@
           <tr>
             <td>{{ player.rank }}</td>
             <td><a href="/user/{{ player.username }}">{{ player.username }}</a></td>
-            <td><!--{{ TODO }}--></td>
-            <td><!--{{ TODO }}--></td>
+            <td>{{ player.wins }}</td>
+            <td>{{ player.losses }}</td>
           </tr>
           {% endfor %}
         </tbody>

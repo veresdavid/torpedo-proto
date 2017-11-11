@@ -120,7 +120,7 @@ def getTopNPlayers(N):
 	tmp_list = list(coll_games.aggregate([{"$group": {"_id": "$winner", "wins": {"$sum": 1}}}, {"$sort": SON([("wins", -1)])}, {"$limit": N}]))
 	result = []
 	for i in range(0, len(tmp_list)):
-		result.append({"rank": i+1, "username": tmp_list[i]["_id"]})
+		result.append({"rank": i+1, "username": tmp_list[i]["_id"], "wins": tmp_list[i]["wins"], "losses": getNumberOfLosses(tmp_list[i]["_id"])})
 	return result
 
 @app.route("/user/<username>")
