@@ -1,4 +1,5 @@
 function postRegistration(){
+	clearErrorMessages()
 
 	var data = {
 		username: $("#username").val(),
@@ -23,15 +24,30 @@ function postRegistration(){
 			}else{
 
 				var error = resp.error;
-
-				// TODO: show error in a div or something better than an alertbox
-				alert(error);
-
+				switch(error.field){
+					case "username":
+						$("#usernameErrorMessage").text(error.message);
+						break;
+					case "email":
+						$("#emailErrorMessage").text(error.message);
+						break;
+					case "password":
+						$("#passwordErrorMessage").text(error.message);
+						$("#repasswordErrorMessage").text(error.message);
+						break;
+				}
 			}
 
 		}
 	});
 
+}
+
+function clearErrorMessages(){
+	$("#usernameErrorMessage").text("");
+	$("#emailErrorMessage").text("");
+	$("#passwordErrorMessage").text("");
+	$("#repasswordErrorMessage").text("");
 }
 
 function clearForm(){

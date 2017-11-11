@@ -24,25 +24,25 @@
 							<span class="input-group-addon"><i class="fa fa-user"></i></span>
 							<input type="text" class="form-control" id="username" name="username" placeholder="username" autocomplete="off" />
 						</div>
-						<span class="help-block"></span>
+						<span id="usernameErrorMessage" class="help-block"></span>
 
 						<div class="input-group">
 							<span class="input-group-addon"><i class="fa fa-envelope"></i></span>
 							<input type="text" class="form-control" id="email" name="email" placeholder="email address" autocomplete="off" />
 						</div>
-						<span class="help-block"></span>
+						<span id="emailErrorMessage" class="help-block"></span>
 												
 						<div class="input-group">
 							<span class="input-group-addon"><i class="fa fa-lock"></i></span>
 							<input  type="password" class="form-control" id="password" name="password" placeholder="password" />
 						</div>
-		                <span class="help-block"></span>
+		                <span id="passwordErrorMessage" class="help-block"></span>
 
 		                <div class="input-group">
 							<span class="input-group-addon"><i class="fa fa-lock"></i></span>
 							<input type="password" class="form-control" id="re-password" name="re-password" placeholder="password again" />
 						</div>
-						<span class="help-block"></span>
+						<span id="repasswordErrorMessage" class="help-block"></span>
 						<span id="successMessage" class="success-block"></span>
 							
 						<button class="btn btn-lg btn-primary btn-block myButton" onclick="postRegistration()" >Sign up</button>
