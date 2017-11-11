@@ -241,9 +241,11 @@ socket.on("ping", () => {
 
 function updateUsers(users){
 	$("#users").empty();
+	var head = $("<p  class=\"list-group-item active\">Online players</p>");
+	$("#users").append(head);
 	users.forEach((user) => {
-		var p = $("<p></p>").text(user);
-		var inv = $("<button></button>").attr("onclick", "challenge('" + user + "')").text("CHALLENGE");
+		var p = $("<div class=\"list-group-item list-group-item-action\"><a style=\" padding-right: 10px;\" href=\"/user/" + user +"\">" + user + "</a></div>");
+		var inv = $("<button class=\"challengeButton btn btn-primary\"></button>").attr("onclick", "challenge('" + user + "')").text("challenge");
 		$(p).append(inv);
 		$("#users").append(p);
 	});
