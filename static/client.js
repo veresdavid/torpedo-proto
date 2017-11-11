@@ -251,12 +251,44 @@ function updateUsers(users){
 	});
 }
 
+var isNextMessageRight = true;
+
 function serverMessage(message){
-	$("#chat").append("<p><b>" + message + "</b></p>");
+	var position = "";
+	if(isNextMessageRight){
+		position = "right";
+	} else {
+		position = "left";
+	}
+	var newMessage = `<li class="` + position + ` clearfix">
+        <div class="chat-body clearfix">
+	        <div class="header">
+	            <strong class="primary-font">System</strong> 
+            </div>
+            <p>` + message + `</p>
+        </div>
+    </li>`;
+    $("#chat").append(newMessage);
+    isNextMessageRight = !isNextMessageRight;
 }
 
 function userMessage(user, message){
-	$("#chat").append("<p><b>" + user + ":</b> " + message + "</p>");
+	var position = "";
+	if(isNextMessageRight){
+		position = "right";
+	} else {
+		position = "left";
+	}
+	var newMessage = `<li class="` + position + ` clearfix">
+        <div class="chat-body clearfix">
+	        <div class="header">
+	            <strong class="primary-font">` + user + `</strong> 
+            </div>
+            <p>` + message + `</p>
+        </div>
+    </li>`;
+    $("#chat").append(newMessage);
+    isNextMessageRight = !isNextMessageRight;
 }
 
 function sendMessage(){
@@ -365,6 +397,19 @@ function turn(){
 		socket.emit("turn", position);
 	}
 }
+
+var isChatWindowOpen = false;
+
+function collapseOne(){
+	if(!isChatWindowOpen){
+		$("#collapseOne").slideDown(500, function(){ isChatWindowOpen = true; });
+		$("#collapseOne").css("visibility", "visible");
+	} else {
+		$("#collapseOne").slideUp(500, function(){ isChatWindowOpen = false; });
+	}
+	
+}
+
 
 
 
