@@ -363,15 +363,20 @@ function ready(){
 	$("#ready").css("display", "none");
 }
 
-// TODO rárakni egy gombra
 function map(){
+	$("#fireButton").css("display", "block");
+	$("#doneButton").css("display", "none");
+
+	var boats = document.getElementsByClassName("boat");
+
+	for(var i = 0; i < boats.length; i++) {
+		$(boats[i]).draggable( 'disable' );
+	}
 
 	socket.emit("map", shipLocations);
 
 }
 
-// TODO nemtom a pontos funkcióját ennek, csak akkor fog menni ha rányom a gombra és volt is előtte target
-// TODO rárakni egy gombra
 function turn(){
 
 	var selected = document.getElementsByClassName("clickedCell")[0];
@@ -432,6 +437,7 @@ window.onload = init;
 window.onresize = resize;
 
 function init() {
+	$("#fireButton").css("display", "none");
 	hideLobbyElements();
 	showGameElements();
 	var userTable = document.getElementById("userTable");
@@ -715,25 +721,3 @@ function opponentTableCellClicked(caller) {
 		caller.classList.add("clickedCell");
 	}
 }
-
-/*function fire() {
-	var selected = document.getElementsByClassName("clickedCell")[0];
-	if(selected != undefined) {
-
-		var xPos = 0;
-		var yPos = 0;
-
-		for(var i = 0; i < opponentTableMatrix.length; i++){
-			for(var j = 0; j < opponentTableMatrix[i].length; j++){
-				if(opponentTableMatrix[i][j] == selected){
-					xPos = i;
-					yPos = j;
-				}
-			}
-		}
-
-		firePosition = {x: xPos, y: yPos};
-		console.log(position);
-		selected.classList.remove("clickedCell");
-	}
-}*/
