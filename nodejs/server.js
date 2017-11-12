@@ -541,6 +541,10 @@ function connectUser(socket, result){
 				game.players[0].socket.join("lobby");
 				game.players[1].socket.join("lobby");
 
+				// update online users
+				game.players[0].socket.to("lobby").emit("onlineUsers", getLobbyUsers());
+				game.players[0].socket.emit("onlineUsers", getLobbyUsers());
+
 				// null game references
 				game.players[0].socket.game = null;
 				game.players[1].socket.game = null;
