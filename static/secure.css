@@ -30,11 +30,11 @@ th {
 	padding: 0;
 }
 
-ul {
+.boatPanel ul {
   	list-style-type: none;
 }
 
-li {
+.boatPanel ul li {
 	width: 100%;
 	height: 128px;
 	padding: 5px;
