@@ -151,6 +151,10 @@ th {
 	text-align:center;
 }
 
+.toplist {
+	margin-bottom: 10px;
+}
+
 .chatbox {
 	position:absolute;
     bottom:0;

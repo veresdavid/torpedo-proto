@@ -441,8 +441,8 @@ window.onresize = resize;
 
 function init() {
 	$("#fireButton").css("display", "none");
-	hideLobbyElements();
-	showGameElements();
+	//hideLobbyElements();
+	//showGameElements();
 	var userTable = document.getElementById("userTable");
 	var tableRows = userTable.children[1].children;
 	for(var i = 0; i < tableRows.length; i++) {
