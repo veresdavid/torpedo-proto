@@ -30,6 +30,8 @@ socket.on("userMessage", (user, message) => {
 
 socket.on("invitations", (invitations) => {
 	$("#invitations").empty();
+	var head = $("<p class=\"list-group-item active\">Invitations</p>");
+	$("#invitations").append(head);
 	invitations.forEach((invitation) => {
 		var p = $("<p></p>").text("INV: " + invitation);
 		var accept = $("<button></button>").attr("onclick", "acceptChallenge('" + invitation + "')").text("ACCEPT");
@@ -41,6 +43,8 @@ socket.on("invitations", (invitations) => {
 
 socket.on("waitings", (waitings) => {
 	$("#waitings").empty();
+	var head = $("<p class=\"list-group-item active\">Waitings</p>");
+	$("#waitings").append(head);
 	waitings.forEach((waiting) => {
 		var p = $("<p></p>").text("WAIT: " + waiting);
 		var cancel = $("<button></button>").attr("onclick", "cancelWaiting('" + waiting + "')").text("CANCEL");
@@ -326,6 +330,8 @@ function clearLobbyElements(){
 	var head = $("<p class=\"list-group-item active\">Invitations</p>");
 	$("#invitations").append(head);
 	$("#users").empty();
+	head = $("<p class=\"list-group-item active\">Online players</p>");
+	$("#users").append(head);
 	$("#waitings").empty();
 	head = $("<p class=\"list-group-item active\">Waitings</p>");
 	$("#waitings").append(head);
