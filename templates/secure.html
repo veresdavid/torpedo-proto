@@ -27,10 +27,7 @@
       <div id="users" class="list-group playerList"></div>
     </div>
 
-    <div id="game">
-      <!-- be kell rakni a containerbe -->
-      <div id="status"></div>
-      <section class="container">
+    <section id="game" class="game">
       <div class="boatPanel">
         <ul>
           <li>
@@ -78,7 +75,7 @@
           <li>
             <div class="boatPlace sizeTwo">
               <div id="5" class="boat sizeTwo">
-                <img src="teszt.jpg" onclick="rotateBoat(this)"/>
+                <img src="/static/teszt.jpg" onclick="rotateBoat(this)"/>
                 <table>
                   <tr>
                     <td></td>
@@ -90,7 +87,7 @@
             </div>
             <div class="boatPlace sizeTwo">
               <div id="6" class="boat sizeTwo">
-                <img src="teszt.jpg" onclick="rotateBoat(this)"/>
+                <img src="/static/teszt.jpg" onclick="rotateBoat(this)"/>
                 <table>
                   <tr>
                     <td></td>
@@ -102,7 +99,7 @@
             </div>
             <div class="boatPlace sizeTwo">
               <div id="7" class="boat sizeTwo">
-                <img src="teszt.jpg" onclick="rotateBoat(this)"/>
+                <img src="/static/teszt.jpg" onclick="rotateBoat(this)"/>
                 <table>
                   <tr>
                     <td></td>
@@ -116,7 +113,7 @@
           <li>
             <div class="boatPlace sizeThree">
               <div id="8" class="boat sizeThree">
-                <img src="teszt.jpg" onclick="rotateBoat(this)"/>
+                <img src="/static/teszt.jpg" onclick="rotateBoat(this)"/>
                 <table>
                   <tr>
                     <td></td>
@@ -129,7 +126,7 @@
             </div>
             <div class="boatPlace sizeThree">
               <div id="9" class="boat sizeThree">
-                <img src="teszt.jpg" onclick="rotateBoat(this)"/>
+                <img src="/static/teszt.jpg" onclick="rotateBoat(this)"/>
                 <table>
                   <tr>
                     <td></td>
@@ -144,7 +141,7 @@
           <li>
             <div class="boatPlace sizeFour">
               <div id="10" class="boat sizeFour">
-                <img src="teszt.jpg" onclick="rotateBoat(this)"/>
+                <img src="/static/teszt.jpg" onclick="rotateBoat(this)"/>
                 <table>
                   <tr>
                     <td></td>
@@ -160,6 +157,7 @@
         </ul>
       </div>
       <div class="upperPanel">
+        <div id="status"></div>
       </div>
       <div style="text-align: center;">
         <button onclick="fire()" class="fireButton">FIRE</button>
@@ -465,11 +463,10 @@
           </tbody>
         </table>
       </div>
-    </section>
-      <!-- Ennek a ready függény nagyon nem jó, hogy rögtön eltűnteti, mert az ellenfél még lehet nem ready... -->
+      <!-- TODO a ready függvény nemjó hogy rögtön eltűnteti -->
       <button id="ready" onclick="ready()">READY</button>
-    </div>
-
+    </section>
+    
     <div class="container">
       <div class="row">
         <div class="col-md-5 chatbox">
