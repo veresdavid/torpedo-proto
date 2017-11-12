@@ -838,22 +838,42 @@ function extractShipsFromMap(map){
 
 	// ONE
 	map.one.forEach((ship) => {
-		ships.push(ship.position);
+		var ones = [];
+		ship.position.forEach((pos) => {
+			var copy = {x: pos.x, y: pos.y};
+			ones.push(copy);
+		});
+		ships.push(ones);
 	});
 
 	// TWO
 	map.two.forEach((ship) => {
-		ships.push(ship.position);
+		var twos = [];
+		ship.position.forEach((pos) => {
+			var copy = {x: pos.x, y: pos.y};
+			twos.push(copy);
+		});
+		ships.push(twos);
 	});
 
 	// THREE
 	map.three.forEach((ship) => {
-		ships.push(ship.position);
+		var threes = [];
+		ship.position.forEach((pos) => {
+			var copy = {x: pos.x, y: pos.y};
+			threes.push(copy);
+		});
+		ships.push(threes);
 	});
 
 	// FOUR
 	map.four.forEach((ship) => {
-		ships.push(ship.position);
+		var fours = [];
+		ship.position.forEach((pos) => {
+			var copy = {x: pos.x, y: pos.y};
+			fours.push(copy);
+		});
+		ships.push(fours);
 	});
 
 	return ships;
