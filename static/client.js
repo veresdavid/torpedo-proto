@@ -364,17 +364,20 @@ function ready(){
 }
 
 function map(){
-	$("#fireButton").css("display", "block");
-	$("#doneButton").css("display", "none");
+	if(shipLocations["one"].length == 4 && shipLocations["two"].length == 3 && shipLocations["three"].length == 2 && shipLocations["four"].length == 1){
+		$("#fireButton").css("display", "block");
+		$("#doneButton").css("display", "none");
 
-	var boats = document.getElementsByClassName("boat");
+		var boats = document.getElementsByClassName("boat");
 
-	for(var i = 0; i < boats.length; i++) {
-		$(boats[i]).draggable( 'disable' );
+		for(var i = 0; i < boats.length; i++) {
+			$(boats[i]).draggable( 'disable' );
+		}
+
+		socket.emit("map", shipLocations);
+	} else {
+		// TODO vmi üzenet hogy HELLÓÓÓ
 	}
-
-	socket.emit("map", shipLocations);
-
 }
 
 function turn(){
@@ -696,10 +699,6 @@ function addShip(id, x1, y1, x2, y2) {
 			break;
 	}
 }
-
-/*function getShipLocations() {
-	return shipLocations;
-}*/
 
 function opponentTableCellClicked(caller) {
 	var yPos = 0;
