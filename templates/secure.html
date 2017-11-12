@@ -9,6 +9,8 @@
       var secret = "{{ current_user.username }}" + ";" + "{{ current_user.password }}";
     </script>
     <script src="{{ url_for('static', filename='jquery.js') }}"></script>
+    <script src="{{ url_for('static', filename='jquery-1.12.4-min.js') }}"></script>
+    <script src="{{ url_for('static', filename='jquery-ui-min.js') }}"></script>
     <script src="{{ url_for('static', filename='socket.io-client.js') }}"></script>
     <script src="{{ url_for('static', filename='client.js') }}"></script>
     <link href="{{ url_for('static', filename='font-awesome.css') }}" rel="stylesheet" type="text/css" /> 
@@ -26,12 +28,448 @@
     </div>
 
     <div id="game">
+      <!-- be kell rakni a containerbe -->
       <div id="status"></div>
-      <div id="battlefield"></div>
+      <section class="container">
+      <div class="boatPanel">
+        <ul>
+          <li>
+            <div class="boatPlace sizeOne">
+              <div id="1" class="boat sizeOne">
+                <table>
+                  <tr>
+                    <td></td>
+                  </tr>
+                </table>
+              </div>
+              <div class="placeHolder sizeOne"></div>
+            </div>
+            <div class="boatPlace sizeOne">
+              <div id="2" class="boat sizeOne">
+                <table>
+                  <tr>
+                    <td></td>
+                  </tr>
+                </table>
+              </div>
+              <div class="placeHolder sizeOne"></div>
+            </div>
+            <div class="boatPlace sizeOne">
+              <div id="3" class="boat sizeOne">
+                <table>
+                  <tr>
+                    <td></td>
+                  </tr>
+                </table>
+              </div>
+              <div class="placeHolder sizeOne"></div>
+            </div>
+            <div class="boatPlace sizeOne">
+              <div id="4" class="boat sizeOne">
+                <table>
+                  <tr>
+                    <td></td>
+                  </tr>
+                </table>
+              </div>
+              <div class="placeHolder sizeOne"></div>
+            </div>
+          </li>
+          <li>
+            <div class="boatPlace sizeTwo">
+              <div id="5" class="boat sizeTwo">
+                <img src="teszt.jpg" onclick="rotateBoat(this)"/>
+                <table>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </table>
+              </div>
+              <div class="placeHolder sizeTwo"></div>
+            </div>
+            <div class="boatPlace sizeTwo">
+              <div id="6" class="boat sizeTwo">
+                <img src="teszt.jpg" onclick="rotateBoat(this)"/>
+                <table>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </table>
+              </div>
+              <div class="placeHolder sizeTwo"></div>
+            </div>
+            <div class="boatPlace sizeTwo">
+              <div id="7" class="boat sizeTwo">
+                <img src="teszt.jpg" onclick="rotateBoat(this)"/>
+                <table>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </table>
+              </div>
+              <div class="placeHolder sizeTwo"></div>
+            </div>
+          </li>
+          <li>
+            <div class="boatPlace sizeThree">
+              <div id="8" class="boat sizeThree">
+                <img src="teszt.jpg" onclick="rotateBoat(this)"/>
+                <table>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </table>
+              </div>
+              <div class="placeHolder sizeThree"></div>
+            </div>
+            <div class="boatPlace sizeThree">
+              <div id="9" class="boat sizeThree">
+                <img src="teszt.jpg" onclick="rotateBoat(this)"/>
+                <table>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </table>
+              </div>
+              <div class="placeHolder sizeThree"></div>
+            </div>
+          </li>
+          <li>
+            <div class="boatPlace sizeFour">
+              <div id="10" class="boat sizeFour">
+                <img src="teszt.jpg" onclick="rotateBoat(this)"/>
+                <table>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </table>
+              </div>
+              <div class="placeHolder sizeFour"></div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="upperPanel">
+      </div>
+      <div style="text-align: center;">
+        <button onclick="fire()" class="fireButton">FIRE</button>
+      </div>
+      <div class="tablePanel">
+        <table id="userTable">
+          <thead>
+            <tr>
+              <th></th>
+              <th>A</th>
+              <th>B</th>
+              <th>C</th>
+              <th>D</th>
+              <th>E</th>
+              <th>F</th>
+              <th>G</th>
+              <th>H</th>
+              <th>I</th>
+              <th>J</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="tableNumber">1</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="tableNumber">2</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="tableNumber">3</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="tableNumber">4</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="tableNumber">5</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="tableNumber">6</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="tableNumber">7</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="tableNumber">8</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="tableNumber">9</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="tableNumber">10</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <table  id="opponentTable">
+          <thead>
+            <tr>
+              <th></th>
+              <th>A</th>
+              <th>B</th>
+              <th>C</th>
+              <th>D</th>
+              <th>E</th>
+              <th>F</th>
+              <th>G</th>
+              <th>H</th>
+              <th>I</th>
+              <th>J</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="tableNumber">1</td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+            </tr>
+            <tr>
+              <td class="tableNumber">2</td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+            </tr>
+            <tr>
+              <td class="tableNumber">3</td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+            </tr>
+            <tr>
+              <td class="tableNumber">4</td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+            </tr>
+            <tr>
+              <td class="tableNumber">5</td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+            </tr>
+            <tr>
+              <td class="tableNumber">6</td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+            </tr>
+            <tr>
+              <td class="tableNumber">7</td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+            </tr>
+            <tr>
+              <td class="tableNumber">8</td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+            </tr>
+            <tr>
+              <td class="tableNumber">9</td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+            </tr>
+            <tr>
+              <td class="tableNumber">10</td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+              <td onclick="opponentTableCellClicked(this)"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+      <!-- Ennek a ready függény nagyon nem jó, hogy rögtön eltűnteti, mert az ellenfél még lehet nem ready... -->
       <button id="ready" onclick="ready()">READY</button>
     </div>
 
-    <!-- TODO oldal alján legyen faszán -->
     <div class="container">
       <div class="row">
         <div class="col-md-5 chatbox">
