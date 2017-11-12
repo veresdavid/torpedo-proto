@@ -145,6 +145,7 @@ th {
 .playerList {
 	width: 20%;
 	margin: auto;
+	display: inline-table;
 }
 
 .lobby {
@@ -153,6 +154,11 @@ th {
 
 .toplist {
 	margin-bottom: 10px;
+}
+
+.lobbyElements {
+	text-align: center;
+  	position: relative;
 }
 
 .chatbox {

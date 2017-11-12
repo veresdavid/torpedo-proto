@@ -241,7 +241,7 @@ socket.on("ping", () => {
 
 function updateUsers(users){
 	$("#users").empty();
-	var head = $("<p  class=\"list-group-item active\">Online players</p>");
+	var head = $("<p class=\"list-group-item active\">Online players</p>");
 	$("#users").append(head);
 	users.forEach((user) => {
 		var p = $("<div class=\"list-group-item list-group-item-action\"><a style=\" padding-right: 10px;\" href=\"/user/" + user +"\">" + user + "</a></div>");
@@ -323,8 +323,12 @@ function cancelWaiting(user){
 
 function clearLobbyElements(){
 	$("#invitations").empty();
-	$("#waitings").empty();
+	var head = $("<p class=\"list-group-item active\">Invitations</p>");
+	$("#invitations").append(head);
 	$("#users").empty();
+	$("#waitings").empty();
+	head = $("<p class=\"list-group-item active\">Waitings</p>");
+	$("#waitings").append(head);
 }
 
 function clearChat(){
