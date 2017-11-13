@@ -174,7 +174,18 @@ socket.on("myTurnResult", (turnResult) => {
 	console.log("MY TURN RESULT");
 	console.log(turnResult);
 
-	// TODO: turnResult object contains the information about the shot
+	var yPos = turnResult["position"]["x"];
+	var xPos = turnResult["position"]["y"];
+
+	fireMatrix[yPos][xPos] = 1;
+	if(turnResult["hit"]) {
+		opponentTableMatrix[yPos][xPos].childNodes[0].src = "/static/x.svg";
+	} else {
+		opponentTableMatrix[yPos][xPos].childNodes[0].src = "/static/circle.svg";
+	}
+
+	// TODO ha elsüllyedt jelezni!! (pl valahogy egy áthúzással?)
+
 	// structure:
 	/*
 		turnResult = {
@@ -413,6 +424,8 @@ function turn(){
 
 		// send the shot to the server
 		socket.emit("turn", position);
+	} else {
+		// TODO vmi üzenet hogy HELLÓÓÓ
 	}
 }
 
@@ -427,11 +440,6 @@ function collapseOne(){
 	}
 	
 }
-
-
-
-
-
 
 var userTableMatrix = [];
 var userTableBoats = [];
@@ -451,8 +459,8 @@ window.onresize = resize;
 
 function init() {
 	$("#fireButton").css("display", "none");
-	//hideLobbyElements();
-	//showGameElements();
+	hideLobbyElements();
+	showGameElements();
 	var userTable = document.getElementById("userTable");
 	var tableRows = userTable.children[1].children;
 	for(var i = 0; i < tableRows.length; i++) {
@@ -484,7 +492,6 @@ function init() {
 		opponentTableRow = [];
 		tmp = [];
 	}
-	// ha mégse statikus méretek lesznek itt be kellesz a hajók méretét állítani a tábla mérete alapján
 
 	var boats = document.getElementsByClassName("boat");
 

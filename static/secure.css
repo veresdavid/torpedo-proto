@@ -161,6 +161,10 @@ th {
   	position: relative;
 }
 
+.tableImage {
+	width: 20px;
+}
+
 .chatbox {
 	position:absolute;
     bottom:0;
