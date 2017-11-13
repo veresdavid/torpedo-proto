@@ -163,6 +163,8 @@ th {
 
 .tableImage {
 	width: 20px;
+	z-index: 99998;
+	overflow: hidden;
 }
 
 .chatbox {
