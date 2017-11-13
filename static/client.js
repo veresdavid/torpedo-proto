@@ -204,8 +204,17 @@ socket.on("enemyTurnResult", (turnResult) => {
 	console.log("ENEMY TURN RESULT");
 	console.log(turnResult);
 
-	// TODO: turnResult object contains the information about the shot
-	// same as above
+	var yPos = turnResult["position"]["x"];
+	var xPos = turnResult["position"]["y"];
+
+	fireMatrix[yPos][xPos] = 1;
+	if(turnResult["hit"]) {
+		userTableMatrix[yPos][xPos].childNodes[0].src = "/static/x.svg";
+	} else {
+		userTableMatrix[yPos][xPos].childNodes[0].src = "/static/circle.svg";
+	}
+
+	// TODO ha elsüllyedt jelezni!! (pl valahogy egy áthúzással?)
 
 });
 
@@ -394,6 +403,8 @@ function map(){
 		for(var i = 0; i < boats.length; i++) {
 			$(boats[i]).draggable( 'disable' );
 		}
+
+		$("#tablePanel").css("z-index", "10000");
 
 		socket.emit("map", shipLocations);
 	} else {
