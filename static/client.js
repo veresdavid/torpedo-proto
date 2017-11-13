@@ -34,8 +34,8 @@ socket.on("invitations", (invitations) => {
 	$("#invitations").append(head);
 	invitations.forEach((invitation) => {
 		var p = $("<p></p>").text("INV: " + invitation);
-		var accept = $("<button></button>").attr("onclick", "acceptChallenge('" + invitation + "')").text("ACCEPT");
-		var reject = $("<button></button>").attr("onclick", "rejectChallenge('" + invitation + "')").text("REJECT");
+		var accept = $("<button class=\"btn btn-primary\"></button>").attr("onclick", "acceptChallenge('" + invitation + "')").text("accept");
+		var reject = $("<button class=\"btn btn-primary\"></button>").attr("onclick", "rejectChallenge('" + invitation + "')").text("reject");
 		$(p).append(accept).append(reject);
 		$("#invitations").append(p);
 	});
@@ -47,7 +47,7 @@ socket.on("waitings", (waitings) => {
 	$("#waitings").append(head);
 	waitings.forEach((waiting) => {
 		var p = $("<p></p>").text("WAIT: " + waiting);
-		var cancel = $("<button></button>").attr("onclick", "cancelWaiting('" + waiting + "')").text("CANCEL");
+		var cancel = $("<button class=\"btn btn-primary\"></button>").attr("onclick", "cancelWaiting('" + waiting + "')").text("cancel");
 		$(p).append(cancel);
 		$("#waitings").append(p);
 	});
@@ -249,7 +249,7 @@ function updateUsers(users){
 	$("#users").append(head);
 	users.forEach((user) => {
 		var p = $("<div class=\"list-group-item list-group-item-action\"><a style=\" padding-right: 10px;\" href=\"/user/" + user +"\">" + user + "</a></div>");
-		var inv = $("<button class=\"challengeButton btn btn-primary\"></button>").attr("onclick", "challenge('" + user + "')").text("challenge");
+		var inv = $("<button class=\"btn btn-primary\"></button>").attr("onclick", "challenge('" + user + "')").text("challenge");
 		$(p).append(inv);
 		$("#users").append(p);
 	});
