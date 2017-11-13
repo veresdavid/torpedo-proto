@@ -637,6 +637,7 @@ function saveGameData(gameData){
 			return;
 		}
 
+		// save game
 		db.collection("games").insertOne(gameData, (err, result) => {
 
 			if(err){
@@ -645,11 +646,33 @@ function saveGameData(gameData){
 				return;
 			}
 
-			console.log("GAME HAS BEEN SAVED!");
+		});
 
-			db.close();
+		// increment winners win number
+		db.collection("users").updateOne({username: gameData.winner}, {$inc: {wins: 1}}, (err, result) => {
+
+			if(err){
+				console.log("UPDATE ONE ERROR OCCURED :(");
+				db.close();
+				return;
+			}
 
 		});
+
+		// increment losers loss number
+		db.collection("users").updateOne({username: gameData.loser}, {$inc: {losses: 1}}, (err, result) => {
+
+			if(err){
+				console.log("UPDATE ONE ERROR OCCURED :(");
+				db.close();
+				return;
+			}
+
+		});
+
+		console.log("GAME SAVED SUCCESSFULLY");
+
+		db.close();
 
 	});
 
