@@ -82,7 +82,7 @@ def registrate_user(data):
 
 	# if data is valid, encrypt password and save user to db
 	hash = sha256_crypt.encrypt(password)
-	coll_users.insert_one({"username": username, "email": email, "password": hash})
+	coll_users.insert_one({"username": username, "email": email, "password": hash, "wins": 0, "losses": 0})
 	return jsonify({"success": True, "error": None})
 
 @app.route("/registration", methods=["GET", "POST"])
@@ -114,20 +114,14 @@ def secured():
 def hello_world():
 	return "Hello, World!"
 
-def getNumberOfWins(username):
-	return coll_games.find({"winner": username}).count()
-
-def getNumberOfLosses(username):
-	return coll_games.find({"loser": username}).count()
-
 def getGamesList(username):
 	return list(coll_games.find({"$or": [{"player1": username}, {"player2": username}]}).sort("date", pymongo.DESCENDING))
 
 def getTopNPlayers(N):
-	tmp_list = list(coll_games.aggregate([{"$group": {"_id": "$winner", "wins": {"$sum": 1}}}, {"$sort": SON([("wins", -1)])}, {"$limit": N}]))
+	tmp_list = list(coll_users.find().sort("wins", pymongo.DESCENDING).limit(N))
 	result = []
 	for i in range(0, len(tmp_list)):
-		result.append({"rank": i+1, "username": tmp_list[i]["_id"], "wins": tmp_list[i]["wins"], "losses": getNumberOfLosses(tmp_list[i]["_id"])})
+		result.append({"rank": i+1, "username": tmp_list[i]["username"], "wins": tmp_list[i]["wins"], "losses": tmp_list[i]["losses"]})
 	return result
 
 @app.route("/user/<username>")
@@ -139,8 +133,8 @@ def user_page(username):
 	else:
 		context = {
 			"username": user["username"],
-			"win": getNumberOfWins(username),
-			"lose": getNumberOfLosses(username),
+			"win": user["wins"],
+			"lose": user["losses"],
 			"games": getGamesList(username)
 		}
 		return render_template("user.html", **context)
