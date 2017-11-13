@@ -33,7 +33,7 @@ socket.on("invitations", (invitations) => {
 	var head = $("<p class=\"list-group-item active\">Invitations</p>");
 	$("#invitations").append(head);
 	invitations.forEach((invitation) => {
-		var p = $("<p></p>").text("INV: " + invitation);
+		var p = $("<p></p>").text(invitation);
 		var accept = $("<button class=\"btn btn-primary\"></button>").attr("onclick", "acceptChallenge('" + invitation + "')").text("accept");
 		var reject = $("<button class=\"btn btn-primary\"></button>").attr("onclick", "rejectChallenge('" + invitation + "')").text("reject");
 		$(p).append(accept).append(reject);
@@ -46,8 +46,8 @@ socket.on("waitings", (waitings) => {
 	var head = $("<p class=\"list-group-item active\">Waitings</p>");
 	$("#waitings").append(head);
 	waitings.forEach((waiting) => {
-		var p = $("<p></p>").text("WAIT: " + waiting);
-		var cancel = $("<button class=\"btn btn-primary\"></button>").attr("onclick", "cancelWaiting('" + waiting + "')").text("cancel");
+		var p = $("<p></p>").text(waiting);
+		var cancel = $("<button class=\"myButton btn btn-primary\"></button>").attr("onclick", "cancelWaiting('" + waiting + "')").text("cancel");
 		$(p).append(cancel);
 		$("#waitings").append(p);
 	});
@@ -184,7 +184,35 @@ socket.on("myTurnResult", (turnResult) => {
 		opponentTableMatrix[yPos][xPos].childNodes[0].src = "/static/circle.svg";
 	}
 
-	// TODO ha elsüllyedt jelezni!! (pl valahogy egy áthúzással?)
+	if(turnResult["sunk"]){
+		var yPositions = [];
+		var xPositions = [];
+		var ship = turnResult["ship"];
+
+		for(var i = 0; i < ship.length; i++){
+			yPositions.push(ship[i]["x"]);
+			xPositions.push(ship[i]["y"]);
+		}
+
+		if(yPositions[0] != yPositions[yPositions.length - 1]){
+			// vertical ship
+			for(var i = 0; i < yPositions.length; i++){
+				var td = opponentTableMatrix[yPositions[i]][xPositions[i]];
+				$(td).css("background-image", "url(line.svg)");
+				$(td).css("-webkit-transform", "rotate(90deg)");
+				$(td).css("-moz-transform", "rotate(90deg)");
+				$(td).css("-ms-transform", "rotate(90deg)");
+				$(td).css("-o-transform", "rotate(90deg)");
+				$(td).css("transform", "rotate(90deg)");
+			}
+		} else {
+			// horizontal ship
+			for(var i = 0; i < xPositions.length; i++){
+				var td = opponentTableMatrix[yPositions[i]][xPositions[i]];
+				$(td).css("background-image", "url(line.svg)");
+			}
+		}
+	}
 
 	// structure:
 	/*
@@ -214,7 +242,35 @@ socket.on("enemyTurnResult", (turnResult) => {
 		userTableMatrix[yPos][xPos].childNodes[0].src = "/static/circle.svg";
 	}
 
-	// TODO ha elsüllyedt jelezni!! (pl valahogy egy áthúzással?)
+	if(turnResult["sunk"]){
+		var yPositions = [];
+		var xPositions = [];
+		var ship = turnResult["ship"];
+
+		for(var i = 0; i < ship.length; i++){
+			yPositions.push(ship[i]["x"]);
+			xPositions.push(ship[i]["y"]);
+		}
+
+		if(yPositions[0] != yPositions[yPositions.length - 1]){
+			// vertical ship
+			for(var i = 0; i < yPositions.length; i++){
+				var td = userTableMatrix[yPositions[i]][xPositions[i]];
+				$(td).css("background-image", "url(line.svg)");
+				$(td).css("-webkit-transform", "rotate(90deg)");
+				$(td).css("-moz-transform", "rotate(90deg)");
+				$(td).css("-ms-transform", "rotate(90deg)");
+				$(td).css("-o-transform", "rotate(90deg)");
+				$(td).css("transform", "rotate(90deg)");
+			}
+		} else {
+			// horizontal ship
+			for(var i = 0; i < xPositions.length; i++){
+				var td = userTableMatrix[yPositions[i]][xPositions[i]];
+				$(td).css("background-image", "url(line.svg)");
+			}
+		}
+	}
 
 });
 
@@ -470,8 +526,8 @@ window.onresize = resize;
 
 function init() {
 	$("#fireButton").css("display", "none");
-	hideLobbyElements();
-	showGameElements();
+	//hideLobbyElements();
+	//showGameElements();
 	var userTable = document.getElementById("userTable");
 	var tableRows = userTable.children[1].children;
 	for(var i = 0; i < tableRows.length; i++) {

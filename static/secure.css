@@ -166,6 +166,10 @@ th {
 	overflow: hidden;
 }
 
+.myButton {
+	margin: 20px;
+}
+
 .chatbox {
 	position:absolute;
     bottom:0;
