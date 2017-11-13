@@ -480,7 +480,7 @@ function connectUser(socket, result){
 		if(result==null){
 
 			// miss
-			var turnResult = createTurnResult(position, false, false);
+			var turnResult = createTurnResult(position, false, false, null);
 
 			// inform players
 			game.players[playerIndex].socket.emit("myTurnResult", turnResult);
@@ -496,11 +496,12 @@ function connectUser(socket, result){
 			// hit
 
 			// update ships
-			ships[result.shipIndex][result.partIndex] = null;
+			ships[result.shipIndex][result.partIndex].sunk = true;
 
 			// sunk?
 			var sunk = isShipSunk(ships[result.shipIndex]);
-			var turnResult = createTurnResult(position, true, sunk);
+			var ship = (sunk==true)?(ships[result.shipIndex]):(null);
+			var turnResult = createTurnResult(position, true, sunk, ship);
 
 			// inform players
 			game.players[playerIndex].socket.emit("myTurnResult", turnResult);
@@ -840,7 +841,7 @@ function extractShipsFromMap(map){
 	map.one.forEach((ship) => {
 		var ones = [];
 		ship.position.forEach((pos) => {
-			var copy = {x: pos.x, y: pos.y};
+			var copy = {x: pos.x, y: pos.y, sunk: false};
 			ones.push(copy);
 		});
 		ships.push(ones);
@@ -850,7 +851,7 @@ function extractShipsFromMap(map){
 	map.two.forEach((ship) => {
 		var twos = [];
 		ship.position.forEach((pos) => {
-			var copy = {x: pos.x, y: pos.y};
+			var copy = {x: pos.x, y: pos.y, sunk: false};
 			twos.push(copy);
 		});
 		ships.push(twos);
@@ -860,7 +861,7 @@ function extractShipsFromMap(map){
 	map.three.forEach((ship) => {
 		var threes = [];
 		ship.position.forEach((pos) => {
-			var copy = {x: pos.x, y: pos.y};
+			var copy = {x: pos.x, y: pos.y, sunk: false};
 			threes.push(copy);
 		});
 		ships.push(threes);
@@ -870,7 +871,7 @@ function extractShipsFromMap(map){
 	map.four.forEach((ship) => {
 		var fours = [];
 		ship.position.forEach((pos) => {
-			var copy = {x: pos.x, y: pos.y};
+			var copy = {x: pos.x, y: pos.y, sunk: false};
 			fours.push(copy);
 		});
 		ships.push(fours);
@@ -909,12 +910,13 @@ function getShipAndPartIndex(ships, position){
 
 }
 
-function createTurnResult(position, hit, sunk){
+function createTurnResult(position, hit, sunk, ship){
 
 	var result = {
 		position: position,
 		hit: hit,
-		sunk: sunk
+		sunk: sunk,
+		ship: ship
 	};
 
 	return result;
@@ -924,7 +926,7 @@ function createTurnResult(position, hit, sunk){
 function isShipSunk(ship){
 
 	for(var i=0; i<ship.length; i++){
-		if(ship[i]!=null) return false;
+		if(ship[i].sunk==false) return false;
 	}
 
 	return true;
