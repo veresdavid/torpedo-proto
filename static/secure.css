@@ -180,11 +180,6 @@ th {
  	align-items: center;
 }
 
-#informator > p {
-	display: table-cell;
-	vertical-align: middle;
-}
-
 .chatbox {
 	position:absolute;
     bottom:0;

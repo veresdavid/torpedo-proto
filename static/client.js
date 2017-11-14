@@ -150,9 +150,10 @@ socket.on("waiting", (turnTime) => {
 
 socket.on("dodge", () => {
 
-	// TODO: inform the player about the dodge
-	//alert("Game dodged!");
-	
+	var text = "<p style=\" font-size: 72px; font-weight: bold;\">DODGE<p>";
+	$('#informator').append(text);
+	$('#informator').css("display", "block");
+	$('#informator').hide('slide',{direction:'right'},7000, emptyInformator);
 
 	console.log("GAME HAS BEEN DODGED!!!");
 
@@ -289,7 +290,10 @@ socket.on("win", () => {
 
 	console.log("WIN!!!");
 
-	// TODO: inform the player about the win
+	var text = "<p style=\" font-size: 72px; font-weight: bold;\">WIN<p>";
+	$('#informator').append(text);
+	$('#informator').css("display", "block");
+	$('#informator').hide('slide',{direction:'right'},7000, emptyInformator);
 
 	hideGameElements();
 
@@ -307,7 +311,10 @@ socket.on("lose", () => {
 
 	console.log("LOSE :(");
 
-	// TODO: inform the player about the lose
+	var text = "<p style=\" font-size: 72px; font-weight: bold;\">LOSE<p>";
+	$('#informator').append(text);
+	$('#informator').css("display", "block");
+	$('#informator').hide('slide',{direction:'right'},7000, emptyInformator);
 
 	hideGameElements();
 
@@ -535,10 +542,14 @@ window.onload = init;
 
 window.onresize = resize;
 
+function emptyInformator(){
+	$('#informator').empty();
+}
+
 function init() {
 	$("#fireButton").css("display", "none");
-	hideLobbyElements();
-	showGameElements();
+	//hideLobbyElements();
+	//showGameElements();
 	var userTable = document.getElementById("userTable");
 	var tableRows = userTable.children[1].children;
 	for(var i = 0; i < tableRows.length; i++) {
