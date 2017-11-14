@@ -523,6 +523,7 @@ function emptyInformator(){
 
 function init() {
 	$("#fireButton").css("display", "none");
+	$("#ready").css("display", "none");
 	//hideLobbyElements();
 	//showGameElements();
 	var userTable = document.getElementById("userTable");

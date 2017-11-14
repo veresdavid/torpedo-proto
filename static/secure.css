@@ -192,6 +192,10 @@ th {
  	align-items: center;
 }
 
+#status {
+	color: white;
+}
+
 .chatbox {
 	position:absolute;
     bottom:0;
