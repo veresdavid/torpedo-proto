@@ -154,21 +154,6 @@ socket.on("dodge", () => {
 	$('#informator').append(text);
 	$('#informator').css("display", "block");
 	$('#informator').hide('slide',{direction:'right'},7000, emptyInformator);
-
-	console.log("GAME HAS BEEN DODGED!!!");
-
-	hideGameElements();
-
-	showLobbyElements();
-
-	clearChat();
-
-	clearStatus();
-
-	clearInterval(interval);
-
-	serverMessage("You have joined to the lobby!");
-
 });
 
 socket.on("myTurnResult", (turnResult) => {
@@ -294,17 +279,6 @@ socket.on("win", () => {
 	$('#informator').append(text);
 	$('#informator').css("display", "block");
 	$('#informator').hide('slide',{direction:'right'},7000, emptyInformator);
-
-	hideGameElements();
-
-	showLobbyElements();
-
-	clearChat();
-
-	clearStatus();
-
-	serverMessage("You have joined to the lobby!");
-
 });
 
 socket.on("lose", () => {
@@ -315,17 +289,6 @@ socket.on("lose", () => {
 	$('#informator').append(text);
 	$('#informator').css("display", "block");
 	$('#informator').hide('slide',{direction:'right'},7000, emptyInformator);
-
-	hideGameElements();
-
-	showLobbyElements();
-
-	clearChat();
-
-	clearStatus();
-
-	serverMessage("You have joined to the lobby!");
-
 });
 
 socket.on("disconnect", () => {
@@ -544,6 +507,18 @@ window.onresize = resize;
 
 function emptyInformator(){
 	$('#informator').empty();
+	
+	hideGameElements();
+
+	showLobbyElements();
+
+	clearChat();
+
+	clearStatus();
+
+	clearInterval(interval);
+
+	serverMessage("You have joined to the lobby!");
 }
 
 function init() {
