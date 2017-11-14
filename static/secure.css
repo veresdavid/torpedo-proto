@@ -170,6 +170,21 @@ th {
 	margin-left: 10px;
 }
 
+#informator {
+	display: none;
+	width: 100%;
+	height: 40%;
+	position: absolute;
+ 	top: 30%;
+ 	z-index: 9999999;
+ 	align-items: center;
+}
+
+#informator > p {
+	display: table-cell;
+	vertical-align: middle;
+}
+
 .chatbox {
 	position:absolute;
     bottom:0;
