@@ -33,9 +33,9 @@ socket.on("invitations", (invitations) => {
 	var head = $("<p class=\"list-group-item active\">Invitations</p>");
 	$("#invitations").append(head);
 	invitations.forEach((invitation) => {
-		var p = $("<p></p>").text(invitation);
-		var accept = $("<button class=\"btn btn-primary\"></button>").attr("onclick", "acceptChallenge('" + invitation + "')").text("accept");
-		var reject = $("<button class=\"btn btn-primary\"></button>").attr("onclick", "rejectChallenge('" + invitation + "')").text("reject");
+		var p = $("<div class=\"list-group-item list-group-item-action\"></div>").text(invitation);
+		var accept = $("<button class=\"myButton btn btn-primary\"></button>").attr("onclick", "acceptChallenge('" + invitation + "')").text("accept");
+		var reject = $("<button class=\"myButton btn btn-primary\"></button>").attr("onclick", "rejectChallenge('" + invitation + "')").text("reject");
 		$(p).append(accept).append(reject);
 		$("#invitations").append(p);
 	});
@@ -46,7 +46,7 @@ socket.on("waitings", (waitings) => {
 	var head = $("<p class=\"list-group-item active\">Waitings</p>");
 	$("#waitings").append(head);
 	waitings.forEach((waiting) => {
-		var p = $("<p></p>").text(waiting);
+		var p = $("<div class=\"list-group-item list-group-item-action\"></div>").text(waiting);
 		var cancel = $("<button class=\"myButton btn btn-primary\"></button>").attr("onclick", "cancelWaiting('" + waiting + "')").text("cancel");
 		$(p).append(cancel);
 		$("#waitings").append(p);
@@ -177,11 +177,17 @@ socket.on("myTurnResult", (turnResult) => {
 	var yPos = turnResult["position"]["x"];
 	var xPos = turnResult["position"]["y"];
 
+	console.log(yPos + " " + xPos);
+
 	fireMatrix[yPos][xPos] = 1;
 	if(turnResult["hit"]) {
-		opponentTableMatrix[yPos][xPos].childNodes[0].src = "/static/x.svg";
+		opponentTableMatrix[yPos][xPos].children[0].src = "/static/x.svg";
+		console.log(opponentTableMatrix[yPos][xPos]);
+		console.log(opponentTableMatrix[yPos][xPos].children[0]);
 	} else {
-		opponentTableMatrix[yPos][xPos].childNodes[0].src = "/static/circle.svg";
+		opponentTableMatrix[yPos][xPos].children[0].src = "/static/circle.svg";
+		console.log(opponentTableMatrix[yPos][xPos]);
+		console.log(opponentTableMatrix[yPos][xPos].children[0]);
 	}
 
 	if(turnResult["sunk"]){
@@ -194,22 +200,27 @@ socket.on("myTurnResult", (turnResult) => {
 			xPositions.push(ship[i]["y"]);
 		}
 
+		console.log(yPositions);
+		console.log(xPositions);
+
 		if(yPositions[0] != yPositions[yPositions.length - 1]){
 			// vertical ship
 			for(var i = 0; i < yPositions.length; i++){
 				var td = opponentTableMatrix[yPositions[i]][xPositions[i]];
-				$(td).css("background-image", "url(line.svg)");
+				$(td).css("background-image", "url(/static/line.svg)");
 				$(td).css("-webkit-transform", "rotate(90deg)");
 				$(td).css("-moz-transform", "rotate(90deg)");
 				$(td).css("-ms-transform", "rotate(90deg)");
 				$(td).css("-o-transform", "rotate(90deg)");
 				$(td).css("transform", "rotate(90deg)");
+				console.log(td);
 			}
 		} else {
 			// horizontal ship
 			for(var i = 0; i < xPositions.length; i++){
 				var td = opponentTableMatrix[yPositions[i]][xPositions[i]];
-				$(td).css("background-image", "url(line.svg)");
+				$(td).css("background-image", "url(/static/line.svg)");
+				console.log(td);
 			}
 		}
 	}
@@ -235,11 +246,10 @@ socket.on("enemyTurnResult", (turnResult) => {
 	var yPos = turnResult["position"]["x"];
 	var xPos = turnResult["position"]["y"];
 
-	fireMatrix[yPos][xPos] = 1;
 	if(turnResult["hit"]) {
-		userTableMatrix[yPos][xPos].childNodes[0].src = "/static/x.svg";
+		userTableMatrix[yPos][xPos].children[0].src = "/static/x.svg";
 	} else {
-		userTableMatrix[yPos][xPos].childNodes[0].src = "/static/circle.svg";
+		userTableMatrix[yPos][xPos].children[0].src = "/static/circle.svg";
 	}
 
 	if(turnResult["sunk"]){
@@ -256,7 +266,7 @@ socket.on("enemyTurnResult", (turnResult) => {
 			// vertical ship
 			for(var i = 0; i < yPositions.length; i++){
 				var td = userTableMatrix[yPositions[i]][xPositions[i]];
-				$(td).css("background-image", "url(line.svg)");
+				$(td).css("background-image", "url(/static/line.svg)");
 				$(td).css("-webkit-transform", "rotate(90deg)");
 				$(td).css("-moz-transform", "rotate(90deg)");
 				$(td).css("-ms-transform", "rotate(90deg)");
@@ -267,7 +277,7 @@ socket.on("enemyTurnResult", (turnResult) => {
 			// horizontal ship
 			for(var i = 0; i < xPositions.length; i++){
 				var td = userTableMatrix[yPositions[i]][xPositions[i]];
-				$(td).css("background-image", "url(line.svg)");
+				$(td).css("background-image", "url(/static/line.svg)");
 			}
 		}
 	}
