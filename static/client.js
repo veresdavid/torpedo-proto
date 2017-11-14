@@ -421,7 +421,7 @@ function hideGameElements(){
 }
 
 function showGameElements(){
-	$("#ready").css("display", "block");
+	$("#ready").css("display", "flex");
 	$("#game").css("display", "block");
 }
 
@@ -507,7 +507,7 @@ window.onresize = resize;
 
 function emptyInformator(){
 	$('#informator').empty();
-	
+
 	hideGameElements();
 
 	showLobbyElements();

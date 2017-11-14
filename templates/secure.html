@@ -35,7 +35,10 @@
     </div>
 
     <div id="informator"></div>
-
+    <div id="ready">
+      <button id="readyButton" onclick="ready()" class="btn btn-primary">ready</button>
+    </div>
+      
     <section id="game" class="game">
       <div class="boatPanel">
         <ul>
@@ -873,13 +876,11 @@
           </tbody>
         </table>
       </div>
-      <!-- TODO a ready függvény nemjó hogy rögtön eltűnteti -->
-      <button id="ready" onclick="ready()">READY</button>
     </section>
     
     <div class="container">
       <div class="row">
-        <div class="col-md-5 chatbox" style="z-index: 99999">
+        <div class="col-md-5 chatbox" style="z-index: 99999999">
           <div class="panel panel-primary">
             <div class="panel-heading" id="accordion">
               <span class="glyphicon glyphicon-comment"></span> Chat
