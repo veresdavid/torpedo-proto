@@ -112,7 +112,7 @@ def secured():
 
 @app.route('/')
 def hello_world():
-	return "Hello, World!"
+	return render_template("main.html")
 
 def getGamesList(username):
 	return list(coll_games.find({"$or": [{"player1": username}, {"player2": username}]}).sort("date", pymongo.DESCENDING))
