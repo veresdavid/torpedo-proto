@@ -1,0 +1,37 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Battleship</title>
+    <meta name="description" content="Battleship - main page">
+    <script src="{{ url_for('static', filename='jquery.js') }}"></script>
+    <link href="{{ url_for('static', filename='main.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ url_for('static', filename='font-awesome.css') }}" rel="stylesheet" type="text/css" /> 
+    <link href="{{ url_for('static', filename='bootstrap-min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="../static/main.css" rel="stylesheet" type="text/css" />
+    <link href="../static/font-awesome.css" rel="stylesheet" type="text/css" /> 
+    <link href="../static/bootstrap-min.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <nav style="border-radius: 0px; margin-bottom: 0;" class="navbar navbar-inverse">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Battleship</a>
+        </div>
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="#">Home</a></li>
+          <li><a href="#">Page 1</a></li>
+          <li><a href="#">Page 2</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+          <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div id="mainpage">
+      <h1>Battleship</h1>
+    </div>
+  </body>
+</html>
