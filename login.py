@@ -125,7 +125,6 @@ def getTopNPlayers(N):
 	return result
 
 @app.route("/user/<username>")
-@login_required
 def user_page(username):
 	user = coll_users.find_one({"username": username})
 	if user is None:
@@ -140,7 +139,6 @@ def user_page(username):
 		return render_template("user.html", **context)
 
 @app.route("/toplist")
-@login_required
 def toplist():
 	context = {
 		"toplist": getTopNPlayers(10)
