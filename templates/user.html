@@ -50,8 +50,8 @@
       <tbody>
         {% for game in games %}
         <tr>
-          <td>{{ game.player1 }}</td>
-          <td>{{ game.player2 }}</td>
+          <td><a href="/user/{{ game.player1 }}">{{ game.player1 }}</a></td>
+          <td><a href="/user/{{ game.player2 }}">{{ game.player2 }}</a></td>
           <td>{{ game.winner }}</td>
           <td>{{ game.loser }}</td>
           <td>{{ game.date }}</td>
