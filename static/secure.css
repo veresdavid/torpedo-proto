@@ -24,6 +24,10 @@ td {
 	padding: 0;
 }
 
+.boat td {
+	border: 0;
+}
+
 th {
 	width: 30px;
 	height: 30px;
@@ -43,10 +47,43 @@ th {
 }
 
 .boat {
-	background-color: red;
 	z-index: 9999;
 	display:inline-block;
 	position: absolute;
+}
+
+.boat img:hover {
+	-moz-box-shadow: 0 0 4px #000;
+	-webkit-box-shadow: 0 0 4px #000;
+	box-shadow: 0 0 4px #000;
+}
+
+.boat.sizeOne {
+	background-image: url(/static/battleship2.svg);
+	background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.boat.sizeTwo {
+	background-image: url(/static/battleship2.svg);
+	background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.boat.sizeThree {
+	background-image: url(/static/battleship.svg);
+	background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.boat.sizeFour {
+	background-image: url(/static/battleship.svg);
+	background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
 }
 
 .tableNumber {
