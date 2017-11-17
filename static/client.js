@@ -507,6 +507,7 @@ window.onresize = resize;
 
 function emptyInformator(){
 	$('#informator').empty();
+	$("#ready").css("display", "none");
 
 	hideGameElements();
 
