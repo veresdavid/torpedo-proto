@@ -48,7 +48,7 @@ function connectUser(socket, result){
 	// store username in socket, for later uses
 	socket.username = result.username;
 
-	// TODO: create connection object and add it to the connections map
+	// create connection object and add it to the connections map
 	connection = {
 		dbdata: result,
 		socket: socket,
@@ -62,15 +62,13 @@ function connectUser(socket, result){
 
 	console.log(getOnlineUsers());
 
-	// TODO: assign callbacks
-
+	// inform users about the new incoming user
 	socket.emit("authSuccess");
-
 	socket.emit("onlineUsers", getLobbyUsers());
-	// socket.broadcast.emit("onlineUsers", getOnlineUsers());
-	// socket.broadcast.emit("userConnected", result.username);
 	socket.to("lobby").emit("onlineUsers", getLobbyUsers());
 	socket.to("lobby").emit("userConnected", result.username);
+
+	// assign callbacks
 
 	socket.on("disconnect", () => {
 
@@ -81,7 +79,7 @@ function connectUser(socket, result){
 
 		// if not in game
 		if(socket.game==null){
-			// TODO: delete inviations and waitings and inform other players
+			// delete inviations and waitings and inform other players
 			var current = connections.get(socket.username);
 			// delete invitations
 			current.invitations.forEach((invitation) => {
@@ -104,10 +102,8 @@ function connectUser(socket, result){
 			current.waitings = [];
 		}
 
-		// TODO: remove user from map
+		// remove user from map
 		connections.delete(socket.username);
-		// socket.broadcast.emit("onlineUsers", getOnlineUsers());
-		// socket.broadcast.emit("userDisconnected", socket.username);
 		socket.to("lobby").emit("onlineUsers", getLobbyUsers());
 		socket.to("lobby").emit("userDisconnected", socket.username);
 	});
@@ -115,7 +111,6 @@ function connectUser(socket, result){
 	socket.on("userMessage", (message) => {
 
 		if(socket.game==null){
-			// socket.broadcast.emit("userMessage", socket.username, message);
 			socket.to("lobby").emit("userMessage", socket.username, message);
 			socket.emit("userMessage", socket.username, message);
 		}else{
@@ -128,13 +123,13 @@ function connectUser(socket, result){
 
 	socket.on("challenge", (user) => {
 
-		// TODO: check if user exists
+		// check if user exists
 		if(!connections.has(user)){
 			console.log("NO SUCH USER!!!");
 			return;
 		}
 
-		// TODO: check if not inviting itself
+		// check if not inviting itself
 		if(socket.username === user){
 			console.log("CANT INVITE YOURSELF!!!");
 			return;
@@ -144,7 +139,7 @@ function connectUser(socket, result){
 		var other = connections.get(user);
 		var current = connections.get(socket.username);
 
-		// TODO: check if not already:
+		// check if not already:
 		// - invited other user
 		if(current.waitings.includes(user)){
 			console.log("ALREADY INVITED!!!");
@@ -156,17 +151,17 @@ function connectUser(socket, result){
 			return;
 		}
 
-		// TODO: check if not in game
+		// check if not in game
 		if(other.socket.game!=null){
 			console.log("ALREADY IN GAME!!!");
 			return;
 		}
 
-		// TODO: update invitations on other user
+		// update invitations on other user
 		other.invitations.push(socket.username);
 		other.socket.emit("invitations", other.invitations);
 
-		// TODO: update waitings on current user
+		// update waitings on current user
 		current.waitings.push(user);
 		socket.emit("waitings", current.waitings);
 
@@ -174,13 +169,13 @@ function connectUser(socket, result){
 
 	socket.on("acceptChallenge", (user) => {
 
-		// TODO: is there such user
+		// is there such user
 		if(!connections.has(user)){
 			console.log("NO SUCH USER!!!");
 			return;
 		}
 
-		// TODO: is there such invitation
+		// is there such invitation
 		var current = connections.get(socket.username);
 		var other = connections.get(user);
 		if(!(current.invitations.includes(user) && other.waitings.includes(socket.username))){
@@ -188,11 +183,11 @@ function connectUser(socket, result){
 			return;
 		}
 
-		// TODO: remove invitation and waiting from connections
+		// remove invitation and waiting from connections
 		current.invitations.splice(current.invitations.indexOf(user), 1);
 		other.waitings.splice(other.waitings.indexOf(socket.username), 1);
 
-		// TODO: inform other invitations and waitings
+		// inform other invitations and waitings
 		current.invitations.forEach((invitation) => {
 			var actual = connections.get(invitation);
 			if(actual.waitings.includes(socket.username)){
@@ -225,7 +220,7 @@ function connectUser(socket, result){
 			}
 		});
 
-		// TODO: empty the 2 players invitations and waitings and inform them
+		// empty the 2 players invitations and waitings and inform them
 		current.invitations = [];
 		current.waitings = [];
 		current.socket.emit("invitations", current.invitations);
@@ -236,7 +231,7 @@ function connectUser(socket, result){
 		other.socket.emit("invitations", other.invitations);
 		other.socket.emit("waitings", other.waitings);
 
-		// TODO: start game
+		// start game
 
 		// players
 		var players = new Array(2);
@@ -288,33 +283,28 @@ function connectUser(socket, result){
 		current.socket.emit("game");
 		other.socket.emit("game");
 
-		console.log("WAITING FOR PLAYERS TO GET READY!!!");
-		// TODO: maybe a timeout for here too?
-
-		// store it in the connection objects
-
 	});
 
 	socket.on("rejectChallenge", (user) => {
 
-		// TODO: check if user exists
+		// check if user exists
 		if(!connections.has(user)){
 			console.log("NO SUCH USER!!!");
 			return;
 		}
 
-		// TODO: check if challenge exists
+		// check if challenge exists
 		var current = connections.get(socket.username);
 		if(!current.invitations.includes(user)){
 			console.log("NO SUCH INVITATION!!!");
 			return;
 		}
 
-		// TODO: remove invitaion from current user and update
+		// remove invitaion from current user and update
 		current.invitations.splice(current.invitations.indexOf(user), 1);
 		socket.emit("invitations", current.invitations);
 
-		// TODO: remove waiting from other user and update
+		// remove waiting from other user and update
 		var other = connections.get(user);
 		other.waitings.splice(other.waitings.indexOf(socket.username), 1);
 		other.socket.emit("waitings", other.waitings);
@@ -345,8 +335,6 @@ function connectUser(socket, result){
 	});
 
 	socket.on("ready", () => {
-
-		// TODO: NOT SECURE!!! USE ARRAY!!!
 
 		// in game?
 		if(socket.game==null){
@@ -401,7 +389,6 @@ function connectUser(socket, result){
 		var validMap = validateMap(map);
 		if(!validMap){
 			console.log("NOT VALID MAP!!!");
-			// TODO: send message to socket?
 			return;
 		}
 
@@ -423,7 +410,6 @@ function connectUser(socket, result){
 			game.timeout = null;
 
 			// request first player to shot
-			// game.players[game.turn].socket.emit("turn");
 			nextTurn(game);
 
 		}
@@ -470,7 +456,6 @@ function connectUser(socket, result){
 
 		// store shot
 		game.shots[playerIndex].add(positionValue(position));
-		console.log(game.shots[playerIndex]);
 
 		// get ship and part index
 		var targetPlayerIndex = 1 - playerIndex;
@@ -577,9 +562,7 @@ function getLobbyUsers(){
 
 function validateUser(socket, username, password){
 
-	console.log("VALIDATING");
-
-	// TODO: mongodb check
+	// mongodb check
 	MongoClient.connect(url, (err, db) => {
 
 		if(err){
@@ -604,10 +587,7 @@ function validateUser(socket, username, password){
 				return;
 			}
 
-			console.log("USER FOUND!!!");
-			console.log(result);
-
-			// TODO: check if not already connected!!!
+			// check if not already connected
 			if(connections.has(username)){
 				console.log("ALREADY CONNECTED!!!");
 				db.close();
@@ -838,8 +818,6 @@ function nextTurn(game){
 
 	// start timeout
 	game.timeout = setTimeout(function() {
-
-		console.log("KECSKE");
 
 		// actual player didnt do anything, so next player is coming
 		var nextPlayerIndex = 1 - game.turn;
