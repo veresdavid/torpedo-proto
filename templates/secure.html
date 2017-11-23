@@ -6,6 +6,7 @@
     <title>Battleship</title>
     <meta name="description" content="Battleship - main page">
     <script>
+      var username = "{{ current_user.username }}";
       var secret = "{{ current_user.username }}" + ";" + "{{ current_user.password }}";
     </script>
     <script src="{{ url_for('static', filename='jquery.js') }}"></script>

@@ -306,8 +306,13 @@ function updateUsers(users){
 	$("#users").append(head);
 	users.forEach((user) => {
 		var p = $("<div class=\"list-group-item list-group-item-action\"><a style=\" padding-right: 10px;\" href=\"/user/" + user +"\">" + user + "</a></div>");
-		var inv = $("<button class=\"btn btn-primary\"></button>").attr("onclick", "challenge('" + user + "')").text("challenge");
-		$(p).append(inv);
+		if(user!==username){
+			var inv = $("<button class=\"btn btn-primary\"></button>").attr("onclick", "challenge('" + user + "')").text("challenge");
+			$(p).append(inv);
+		}else{
+			var icon = $("<span class=\"glyphicon glyphicon-user\"></span>");
+			$(p).append(icon);
+		}
 		$("#users").append(p);
 	});
 }
